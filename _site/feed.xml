@@ -2,7 +2,7 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Rui Wang&#39;s Blog</title>
-    <description>A simple, beautiful theme for Jekyll that emphasizes content rather than aesthetic fluff.</description>
+    <description>Hi there, I am Rui Wang. A software developer from Cambridge UK. I write about software development and architecture.</description>
     <link>http://ruiwanguk.github.com/</link>
     <atom:link href="http://ruiwanguk.github.com/feed.xml" rel="self" type="application/rss+xml" />
     
