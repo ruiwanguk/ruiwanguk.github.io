@@ -4,8 +4,8 @@ title: About
 permalink: /about/
 ---
 
-This is the base Jekyll theme. You can find out more info about customizing your Jekyll theme, as well as basic Jekyll usage documentation at [jekyllrb.com](http://jekyllrb.com/)
+Hi there, I am  Rui Wang; a software engineer from Cambridge UK. I am currently working in the biotech industry, provide enterprise solutions mainly in Java, and a keen contributor to open-source projects.  
 
-You can find the source code for the Jekyll new theme at: [github.com/jglovier/jekyll-new](https://github.com/jglovier/jekyll-new)
+I am open to interesting and fun consulting gigs, short-term contracts. If you think you have somthing we can work together on then [get in touch](mailto:harry.r.wang@gmail.com).
 
-You can find the source code for Jekyll at [github.com/jekyll/jekyll](https://github.com/jekyll/jekyll)
+I am also on [Twitter](https://twitter.com/ruiwang_cn) and [LinkedIn](https://www.linkedin.com/pub/rui-wang/3/a69/b36).
