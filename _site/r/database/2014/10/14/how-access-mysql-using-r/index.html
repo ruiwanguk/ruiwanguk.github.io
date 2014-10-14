@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>How to access MySQL using R &#8211; Rui Wang's Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="R provides an easy way of accessing MySQL database and retrieving database for analysis.">
+    <meta name="author" content="Rui Wang">
+    <meta name="keywords" content="r, database">
+    <link rel="canonical" href="http://ruiwanguk.github.com/r/database/2014/10/14/how-access-mysql-using-r/">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/pixyll.css" type="text/css">
+
+    <!-- Fonts -->
+    <link href='//fonts.googleapis.com/css?family=Merriweather:900,900italic,300,300italic' rel='stylesheet' type='text/css'>
+    <link href='//fonts.googleapis.com/css?family=Lato:900,300' rel='stylesheet' type='text/css'>
+    
+
+    <!-- Open Graph -->
+    <!-- From: https://github.com/mmistakes/hpstr-jekyll-theme/blob/master/_includes/head.html -->
+    <meta property="og:locale" content="en_US">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="How to access MySQL using R">
+    <meta property="og:description" content="Hi there, I am Rui Wang. A software developer from Cambridge UK. I write about software development and architecture.">
+    <meta property="og:url" content="http://ruiwanguk.github.com/r/database/2014/10/14/how-access-mysql-using-r/">
+    <meta property="og:site_name" content="Rui Wang's Blog">
+</head>
+
+<body class="">
+  <div class="site-wrap">
+    <header class="site-header px2 px-responsive">
+  <div class="mt2 wrap">
+    <div class="measure">
+      <a href="http://ruiwanguk.github.com" class="site-title">Rui Wang's Blog</a>
+      <nav class="site-nav right">
+        <a href="/about/">About</a>
+
+      </nav>
+      <div class="clearfix"></div>
+      
+    </div>
+  </div>
+</header>
+
+
+    <div class="post p2 p-responsive wrap" role="main">
+      <div class="measure">
+        
+
+
+<div class="post-header mb2">
+  <h1 class="py2">How to access MySQL using R</h1>
+  <span class="post-meta">Oct 14, 2014</span><br>
+  
+  <span class="post-meta small">2 minute read</span>
+</div>
+
+<article class="post-content">
+  <p>For data scientists, getting and cleaning data is one of most important step in their data analysis work flow. High quality data paves the way for well structured and executed data analysis, whereas poor quality data can often lead to misguided discoveries.  </p>
+
+<p>Relational DBMS such as MySQL and Oracle are frequently used to store preprocessed and structured data. It is therefore important to understand how to connect to relational databases and retrieve required information from its tables. In this post, I will cover how to use R to access MySQL databases. </p>
+
+<h3 id="setup">Setup</h3>
+
+<p>Before you can connect to MySQL, you need to install RMySQL packages in your R. If you are using Mac, it is fairly straightforward. Simply type the following command in your R terminal. </p>
+
+<pre><code>&gt; install.packages("RMySQL")
+</code></pre>
+
+<p>If you are using Windows, it is a bit more complicated. But this is already well documented on <a href="http://cran.r-project.org/web/packages/RMySQL">RMySQL official site</a>.</p>
+
+<h3 id="connect-to-mysql">Connect to MySQL</h3>
+
+<p>Now you are ready to go, make sure that you have an existing MySQL database which you have access permission. Or, you can <a href="http://dev.mysql.com/doc/refman/5.1/en/installing.html">install MySQL</a> locally and create a test database yourself. </p>
+
+<p>Here, I am using the public facing MySQL instance provided by the Proteomics Identifications data (<a href="http://www.ebi.ac.uk/pride">PRIDE</a>). It stores the protein and peptide identification evidences produced by mass spectrometers. Here are the database connection details:</p>
+
+<pre><code>Host: 193.62.194.210
+Port: 5000 
+Database: pride_2
+</code></pre>
+
+<p>If you want to use the same database as your playground, please check the connection command below for user name and password. But do be careful with the mass selects and joins, as these queries can consume a lot of resources and return many rows of data.</p>
+
+<p>Connect to the database using the following command:</p>
+
+<pre><code>&gt; con &lt;- dbConnect(MySQL(), user="inspector", password="inspector", 
+	dbname="pride_2", host="193.62.194.210", port=5000)
+</code></pre>
+
+<h3 id="query-mysql">Query MySQL</h3>
+
+<p>So you are now connected, you try the following commands to list tables and list the fields in a table:</p>
+
+<pre><code># list tables
+&gt; dbListTable(con)
+
+# list fields in the 'pride_experiment' table
+&gt; dbListFields(con, "pride_experiment")	
+</code></pre>
+
+<p>You can also do a select query:</p>
+
+<pre><code># count the number of rows in the 'pride_experiment' table
+&gt; dbGetQuery(con, "select count(*) from pride_experiment")
+</code></pre>
+
+<p>Or if you want to page your results:</p>
+
+<pre><code># get the first 100 rows from the 'pride_experiment' table
+&gt; rs &lt;- dbSendQuery(con, "select * from pride_experiment limit 1000")
+&gt; data &lt;- fetch(rs, 100)
+
+# or you can get all the records in one go using -1
+&gt; data &lt;- fetch(rs, -1)
+
+# once you are done, you should clear the result set
+&gt; dbClearResult(rs)
+</code></pre>
+
+<h3 id="close-your-connections">Close your connections</h3>
+
+<p>Finally, it is important that you remember to close the connection once you done:</p>
+
+<pre><code>&gt; dbDisconnect(con)		
+</code></pre>
+
+<h3 id="other-resources">Other resources</h3>
+
+<p><a href="http://cran.r-project.org/web/packages/RMySQL/RMySQL.pdf">RMySQL vignette</a> provides a list of commonly used commands</p>
+
+<p><a href="http://www.r-bloggers.com/mysql-and-r/">MySQL and R</a> is a nice blog post on additional RMySQL tips. </p>
+
+</article>
+
+
+
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+  <div class="p2 wrap">
+    <div class="measure mt1 center">
+      <small>
+        Written by <a href="http://ruiwanguk.github.com">Rui Wang</a> (<a href="https://twitter.com/ruiwang_cn">@ruiwang_cn</a>).<br>
+        Available on <a href="https://github.com/ruiwanguk">Github</a>.
+      </small>
+    </div>
+  </div>
+</footer>
+
+
+
+</body>
+</html>
