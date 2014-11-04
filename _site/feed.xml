@@ -7,7 +7,103 @@
     <atom:link href="http://ruiwanguk.github.com/feed.xml" rel="self" type="application/rss+xml" />
     
       <item>
-        <title>How to access MySQL using R</title>
+        <title>Constructor in JavaScript</title>
+        <description>&lt;p&gt;Constructor in JavaScript is often a source of confusion for people new to the language. Particularly if coming from a classical languages (such as Java or C#), it can feel a bit alien at first. This post is aimed at clarifying the mechanical details behind the constructor, also serves as a self reminder on the inner workings of JavaScript. &lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Friendly warning&lt;/strong&gt;: Please make sure you have some basic understanding of JavaScript before reading further. &lt;/p&gt;
+
+&lt;h3 id=&quot;inheritance&quot;&gt;Inheritance&lt;/h3&gt;
+
+&lt;p&gt;In classical languages (such as Java), inheritance provides two key benefits. First, it is the foundation for code reuse. Some people would argue that &lt;a href=&quot;http://en.wikipedia.org/wiki/Polymorphism_(computer_science)&quot;&gt;Polymorphism&lt;/a&gt; should be the correct term, but it is really just a clever way of making minor changes to code while retaining most of the business logic. Second, it is important for static type language to avoid casting between similar types. &lt;/p&gt;
+
+&lt;p&gt;JavaScript on the other hand is a loosely typed programming language. This means that it does not need to cast. Therefore for JavaScript, the object’s own inheritance hierarchy is not important, what matters is what it does.&lt;/p&gt;
+
+&lt;p&gt;JavaScript’s inheritance is prototypal by nature. Unlike the classical languages, it does not have the concept of ‘&lt;em&gt;Class&lt;/em&gt;’. Instead, inheritance is archived directly via objects. &lt;em&gt;Object A&lt;/em&gt; can inherit &lt;em&gt;Object B&lt;/em&gt;’s methods and variables only if &lt;em&gt;Object B&lt;/em&gt; is a ‘prototype’ of the object. The root of this object inheritances is always Object.prototype.&lt;/p&gt;
+
+&lt;p&gt;For example, you can create an object using the JavaScript object literal:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;// create an empty object
+var myObj = {}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The object created in the above code seems to be empty, but actually it has a hidden reference to &lt;em&gt;Object.prototype&lt;/em&gt;. Now, there are two key points worth highlighting here:&lt;/p&gt;
+
+&lt;p&gt;First, an object’s prototype is always hidden: this seems so obvious, but it is so easy to get this concept wrong. What I mean by hidden? Once a object’s prototype is assigned, it can not be accessed by code directly, and also it can not be re-assigned.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;// This will return nothing
+console.log(myObj.prototype)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Second, do not confuse &lt;em&gt;Object.prototype&lt;/em&gt; with an object’s prototype. &lt;em&gt;Object.prototype&lt;/em&gt; is &lt;em&gt;Object&lt;/em&gt;’s ‘prototype’ property, whereas object’s prototype is the object created and inherited from. The reason why this is done this way will be become clear in the next section.&lt;/p&gt;
+
+&lt;h3 id=&quot;constructor&quot;&gt;Constructor&lt;/h3&gt;
+
+&lt;p&gt;As mentioned by Douglas Crockford in &lt;a href=&quot;http://shop.oreilly.com/product/9780596517748.do&quot;&gt;JavaScript:The Good Parts&lt;/a&gt;, JavaScript is conflicted about its prototypal nature. It was trying to emulate classical languages on constructing objects using the ‘&lt;em&gt;new&lt;/em&gt;’ keyword. For example:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;// a simple constructor
+var MyConstructor = function () {
+	this.name = &quot;Rui&quot;;
+}
+
+// create a new object
+var myObj = new MyConstructor();
+
+// prints &#39;Rui&#39;
+console.log(myObj.name);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;What happened was that a new object will be created if the &lt;em&gt;myConstructor&lt;/em&gt; function is invoked with the ‘&lt;em&gt;new&lt;/em&gt;’ prefix. ‘&lt;em&gt;this&lt;/em&gt;’ in the constructor function will be bound to the newly created object, and all the properties will be added to the new object directly. The new object will be returned as the result of the constructor call. &lt;/p&gt;
+
+&lt;p&gt;More importantly, the prototype of the newly created object (&lt;em&gt;myObj&lt;/em&gt;) is the value of the function’s ‘prototype’ property. So if we change the code slightly:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;// a simple constructor
+var MyConstructor = function () {
+	this.name = &quot;Rui&quot;;
+}
+
+MyConstructor.prototype = {surname : &quot;Wang&quot;};
+
+// create a new object
+var myObj = new MyConstructor();
+
+// prints &#39;Wang&#39;
+console.log(myObj.surname);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;In the code above, we have assigned a new object to &lt;em&gt;MyConstructor.prototype&lt;/em&gt; with property ‘surname’. &lt;em&gt;myObj&lt;/em&gt; inherits this property, so the value of &lt;em&gt;MyConstructor.prototype&lt;/em&gt; becomes the prototype of &lt;em&gt;myObj&lt;/em&gt;. &lt;/p&gt;
+
+&lt;p&gt;All constructor functions are normal functions in JavaScript. When a function object is created, the code that produces the function object runs something like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;this.prototype = {constructor : this}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;So by default, invoking ‘&lt;em&gt;new&lt;/em&gt;’ on a constructor is going to produce an object that its prototype has a ‘constructor’ property, this property points to the original constructor function object. &lt;/p&gt;
+
+&lt;h3 id=&quot;alternative&quot;&gt;Alternative&lt;/h3&gt;
+
+&lt;p&gt;Instead of calling the constructor, one can adopt the coding pattern suggested by Douglas Crockford:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;if (typeof Object.create !== &#39;function&#39;) {
+	Object.create = function (o) {
+		var F = function() {};
+		F.prototype = o;
+		return new F();
+	};
+}
+
+var newObj = Object.create(oldObj);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&quot;other-resources&quot;&gt;Other resources&lt;/h3&gt;
+&lt;p&gt;&lt;a href=&quot;http://zeekat.nl/articles/constructors-considered-mildly-confusing.html&quot;&gt;Constructors Considered Mildly Confusing&lt;/a&gt; provides nice diagrams that illustrate the points above.&lt;/p&gt;
+</description>
+        <pubDate>Tue, 04 Nov 2014 20:27:19 +0000</pubDate>
+        <link>http://ruiwanguk.github.com/javascript/2014/11/04/JavaScript-Constructor/</link>
+        <guid isPermaLink="true">http://ruiwanguk.github.com/javascript/2014/11/04/JavaScript-Constructor/</guid>
+      </item>
+    
+      <item>
+        <title>Access MySQL using R</title>
         <description>&lt;p&gt;For data scientists, getting and cleaning data is one of most important step in their data analysis work flow. High quality data paves the way for well structured and executed data analysis, whereas poor quality data can often lead to misguided discoveries.  &lt;/p&gt;
 
 &lt;p&gt;Relational DBMS such as MySQL and Oracle are frequently used to store preprocessed and structured data. It is therefore important to understand how to connect to relational databases and retrieve required information from its tables. In this post, I will cover how to use R to access MySQL databases. &lt;/p&gt;
@@ -86,150 +182,6 @@ Database: pride_2
         <pubDate>Tue, 14 Oct 2014 09:47:19 +0100</pubDate>
         <link>http://ruiwanguk.github.com/r/database/2014/10/14/how-access-mysql-using-r/</link>
         <guid isPermaLink="true">http://ruiwanguk.github.com/r/database/2014/10/14/how-access-mysql-using-r/</guid>
-      </item>
-    
-      <item>
-        <title>Hello, Pixyll</title>
-        <description>&lt;p&gt;Hello.&lt;/p&gt;
-
-&lt;p&gt;Pixyll is a simple, beautiful theme for Jekyll that emphasizes content rather than aesthetic fluff. It’s mobile &lt;em&gt;first&lt;/em&gt;, fluidly responsive, and delightfully lightweight.&lt;/p&gt;
-
-&lt;p&gt;It’s pretty minimal, but leverages large type and drastic contrast to make a statement, on all devices.&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;
-    Perfection is achieved, not when there is nothing more to add, but when there is nothing left to take away.
-  &lt;/p&gt;
-  &lt;footer&gt;&lt;cite title=&quot;Antoine de Saint-Exupéry&quot;&gt;Antoine de Saint-Exupéry&lt;/cite&gt;&lt;/footer&gt;
-&lt;/blockquote&gt;
-
-&lt;h2 id=&quot;where-is-it&quot;&gt;Where is it?&lt;/h2&gt;
-
-&lt;p&gt;Checkout the &lt;a href=&quot;https://github.com/johnotander/pixyll&quot;&gt;Github repository&lt;/a&gt; to download it, request a feature, or report a bug.&lt;/p&gt;
-
-&lt;p&gt;It’s free, and open source (&lt;a href=&quot;http://opensource.org/licenses/MIT&quot;&gt;MIT&lt;/a&gt;).&lt;/p&gt;
-</description>
-        <pubDate>Wed, 11 Jun 2014 16:31:19 +0100</pubDate>
-        <link>http://ruiwanguk.github.com/jekyll/pixyll/2014/06/11/welcome-to-pixyll/</link>
-        <guid isPermaLink="true">http://ruiwanguk.github.com/jekyll/pixyll/2014/06/11/welcome-to-pixyll/</guid>
-      </item>
-    
-      <item>
-        <title>Pixyll in Action</title>
-        <description>&lt;p&gt;There is a significant amount of subtle, yet precisely calibrated, styling to ensure
-that your content is emphasized while still looking aesthetically pleasing.&lt;/p&gt;
-
-&lt;p&gt;All links are easy to &lt;a href=&quot;#&quot;&gt;locate and discern&lt;/a&gt;, yet don’t detract from the harmony
-of a paragraph. The &lt;em&gt;same&lt;/em&gt; goes for italics and &lt;strong&gt;bold&lt;/strong&gt; elements. Even the the strikeout
-works if &lt;del&gt;for some reason you need to update your post&lt;/del&gt;. For consistency’s sake,
-&lt;ins&gt;The same goes for insertions&lt;/ins&gt;, of course.&lt;/p&gt;
-
-&lt;h3 id=&quot;code-with-syntax-highlighting&quot;&gt;Code, with syntax highlighting&lt;/h3&gt;
-
-&lt;p&gt;Code blocks use the &lt;a href=&quot;http://ethanschoonover.com/solarized&quot;&gt;solarized&lt;/a&gt; theme. Both the light and
-dark versions are included, so you can swap them out easily. &lt;em&gt;Solarized Dark&lt;/em&gt; is the default.&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Awesome&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ActiveRecord&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;
-  &lt;span class=&quot;kp&quot;&gt;include&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;EvenMoreAwesome&lt;/span&gt;
-
-  &lt;span class=&quot;n&quot;&gt;validates_presence_of&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:something&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;validates&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:email&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;email_format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;
-
-  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;initialize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;email&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;nil&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;nb&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;email&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;email&lt;/span&gt;
-    &lt;span class=&quot;nb&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;h1 id=&quot;headings&quot;&gt;Headings!&lt;/h1&gt;
-
-&lt;p&gt;They’re responsive, and well-proportioned (in &lt;code&gt;padding&lt;/code&gt;, &lt;code&gt;line-height&lt;/code&gt;, &lt;code&gt;margin&lt;/code&gt;, and &lt;code&gt;font-size&lt;/code&gt;).
-They also heavily rely on the awesome utility, &lt;a href=&quot;http://www.basscss.com/&quot;&gt;BASSCSS&lt;/a&gt;.&lt;/p&gt;
-
-&lt;h5 id=&quot;they-draw-the-perfect-amount-of-attention&quot;&gt;They draw the perfect amount of attention&lt;/h5&gt;
-
-&lt;p&gt;This allows your content to have the proper informational and contextual hierarchy. Yay.&lt;/p&gt;
-
-&lt;h3 id=&quot;there-are-lists-too&quot;&gt;There are lists, too&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Apples&lt;/li&gt;
-  &lt;li&gt;Oranges&lt;/li&gt;
-  &lt;li&gt;Potatoes&lt;/li&gt;
-  &lt;li&gt;Milk&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;Mow the lawn&lt;/li&gt;
-  &lt;li&gt;Feed the dog&lt;/li&gt;
-  &lt;li&gt;Dance&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h3 id=&quot;images-look-great-too&quot;&gt;Images look great, too&lt;/h3&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://cloud.githubusercontent.com/assets/1424573/3378137/abac6d7c-fbe6-11e3-8e09-55745b6a8176.png&quot; alt=&quot;desk&quot; /&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;there-are-also-pretty-colors&quot;&gt;There are also pretty colors&lt;/h3&gt;
-
-&lt;p&gt;Also the result of &lt;a href=&quot;http://www.basscss.com/&quot;&gt;BASSCSS&lt;/a&gt;, you can &lt;span class=&quot;bg-dark-gray white&quot;&gt;highlight&lt;/span&gt; certain components
-of a &lt;span class=&quot;red&quot;&gt;post&lt;/span&gt; &lt;span class=&quot;mid-gray&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;green&quot;&gt;CSS&lt;/span&gt; &lt;span class=&quot;orange&quot;&gt;classes&lt;/span&gt;.&lt;/p&gt;
-
-&lt;p&gt;I don’t recommend using blue, though. It looks like a &lt;span class=&quot;blue&quot;&gt;link&lt;/span&gt;.&lt;/p&gt;
-
-&lt;h3 id=&quot;stylish-blockquotes-included&quot;&gt;Stylish blockquotes included&lt;/h3&gt;
-
-&lt;p&gt;You can use the markdown quote syntax, &lt;code&gt;&amp;gt;&lt;/code&gt; for simple quotes.&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse quis porta mauris.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;However, you need to inject html if you’d like a citation footer. I will be working on a way to
-hopefully sidestep this inconvenience.&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;
-    Perfection is achieved, not when there is nothing more to add, but when there is nothing left to take away.
-  &lt;/p&gt;
-  &lt;footer&gt;&lt;cite title=&quot;Antoine de Saint-Exupéry&quot;&gt;Antoine de Saint-Exupéry&lt;/cite&gt;&lt;/footer&gt;
-&lt;/blockquote&gt;
-
-&lt;h3 id=&quot;theres-more-being-added-all-the-time&quot;&gt;There’s more being added all the time&lt;/h3&gt;
-
-&lt;p&gt;Checkout the &lt;a href=&quot;https://github.com/johnotander/pixyll&quot;&gt;Github repository&lt;/a&gt; to request,
-or add, features.&lt;/p&gt;
-
-&lt;p&gt;Happy writing.&lt;/p&gt;
-</description>
-        <pubDate>Tue, 10 Jun 2014 13:31:19 +0100</pubDate>
-        <link>http://ruiwanguk.github.com/jekyll/pixyll/2014/06/10/see-pixyll-in-action/</link>
-        <guid isPermaLink="true">http://ruiwanguk.github.com/jekyll/pixyll/2014/06/10/see-pixyll-in-action/</guid>
-      </item>
-    
-      <item>
-        <title>So, What is Jekyll?</title>
-        <description>&lt;p&gt;Jekyll is a tool for transforming your plain text into static websites and 
-blogs. It is simple, static, and blog-aware. Jekyll uses the 
-&lt;a href=&quot;http://docs.shopify.com/themes/liquid-basics&quot;&gt;Liquid&lt;/a&gt; templating
-language and has builtin &lt;a href=&quot;http://daringfireball.net/projects/markdown/&quot;&gt;Markdown&lt;/a&gt;
-and &lt;a href=&quot;http://en.wikipedia.org/wiki/Textile_(markup_language)&quot;&gt;Textile&lt;/a&gt; support.&lt;/p&gt;
-
-&lt;p&gt;It also ties in nicely to &lt;a href=&quot;https://pages.github.com/&quot;&gt;Github Pages&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;Learn more about Jekyll on their &lt;a href=&quot;http://jekyllrb.com/&quot;&gt;website&lt;/a&gt;.&lt;/p&gt;
-</description>
-        <pubDate>Mon, 09 Jun 2014 13:32:18 +0100</pubDate>
-        <link>http://ruiwanguk.github.com/jekyll/pixyll/2014/06/09/so-what-is-jekyll/</link>
-        <guid isPermaLink="true">http://ruiwanguk.github.com/jekyll/pixyll/2014/06/09/so-what-is-jekyll/</guid>
-      </item>
-    
-      <item>
-        <title>Pixyll has Pagination</title>
-        <description>&lt;p&gt;This is an empty post to illustrate the pagination component with Pixyll.&lt;/p&gt;
-</description>
-        <pubDate>Sun, 08 Jun 2014 12:21:29 +0100</pubDate>
-        <link>http://ruiwanguk.github.com/jekyll/pixyll/2014/06/08/pixyll-has-pagination/</link>
-        <guid isPermaLink="true">http://ruiwanguk.github.com/jekyll/pixyll/2014/06/08/pixyll-has-pagination/</guid>
       </item>
     
   </channel>

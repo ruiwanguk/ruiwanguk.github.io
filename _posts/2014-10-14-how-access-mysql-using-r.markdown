@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      How to access MySQL using R
+title:      Access MySQL using R
 date:       2014-10-14 08:47:19
 summary:    R provides an easy way of accessing MySQL database and retrieving database for analysis. 
 categories: R Database
