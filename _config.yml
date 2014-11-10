@@ -6,9 +6,13 @@ name: Rui Wang's Blog
 description: "Hi there, I am Rui Wang. A software developer from Cambridge UK. I write about software development and architecture."
 baseurl: ""
 url: "http://ruiwanguk.github.com"
+github_username: ruiwanguk
+twitter_username: ruiwang_cn
+linkedin_username: ruiwanguk
 google_analytics:
 animated: false
 show_related_posts: false
+show_social_icons: true
 
 # Build settings
 markdown: kramdown
