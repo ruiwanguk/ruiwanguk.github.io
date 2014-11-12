@@ -2,7 +2,7 @@
 layout:     post
 title:      Cross-Origin Resource Sharing (CORS)
 date:       2014-11-11 20:27:19
-summary:    Cross-origin resource sharing is commonly used by modern web applications, to make cross domain requests for script, image or data. 
+summary:    Cross-origin resource sharing is commonly used by modern web applications to make cross domain requests for script, image or data. 
 categories: Web
 ---
 
