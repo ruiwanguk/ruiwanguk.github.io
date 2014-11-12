@@ -7,8 +7,104 @@
     <atom:link href="http://ruiwanguk.github.com/feed.xml" rel="self" type="application/rss+xml" />
     
       <item>
+        <title>Cross-Origin Resource Sharing (CORS)</title>
+        <description>&lt;p&gt;While implementing the new version of PRIDE Cluster website, a colleague of mine added a simple implementation (see code below) of Cross-Origin Resource Sharing (CORS) into the web service. This got me a bit curious and decided to do a bit research around this topic.  &lt;/p&gt;
+
+&lt;p&gt;First, let’s start from the origin of the problem. &lt;/p&gt;
+
+&lt;h3 id=&quot;same-origin-policy&quot;&gt;Same-origin policy&lt;/h3&gt;
+
+&lt;p&gt;The same-origin policy restricts how a document or script loaded from one origin can interact with a resource from another origin. The primarily used as a way of preventing the &lt;a href=&quot;http://en.wikipedia.org/wiki/Cross-site_request_forgery&quot;&gt;Cross-site Request Forgery&lt;/a&gt; attack. &lt;/p&gt;
+
+&lt;p&gt;By definition, two documents have the same origin if the access protocol, port (if one is specified) and host are the same. &lt;/p&gt;
+
+&lt;p&gt;For example, if you have a page: &lt;em&gt;http://www.ebi.ac.uk/pride&lt;/em&gt; is trying to access a web service at &lt;em&gt;http://www.ebi.ac.uk/pride/ws/archive/project/PXD000001&lt;/em&gt;, this will not be blocked by the browser’s same origin component. &lt;/p&gt;
+
+&lt;p&gt;However, if you deploy the web service under another domain, &lt;em&gt;http://www.proteomexchange.org/pride/ws/archive/project/PXD000001&lt;/em&gt;, this request will be automatically blocked. &lt;/p&gt;
+
+&lt;p&gt;Now, there are exceptions to these rules depending on the browser, and these exceptions are often non-standard. For instance in Internet Explorer, it has two exceptions:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Trust zone: if both domains are in highly trusted zone. e.g. corporate domains. The same-origin policy will not apply. &lt;/li&gt;
+  &lt;li&gt;Port: IE doesn’t include port as part of their same-origin component. Therefore, for &lt;em&gt;http://www.ebi.ac.uk:8080/pride&lt;/em&gt; can access content stored at &lt;em&gt;http://www.ebi.ac.uk:8081/pride&lt;/em&gt;. &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;cross-origin-network-access&quot;&gt;Cross-origin network access&lt;/h3&gt;
+
+&lt;p&gt;The same-origin policy controls the interactions between two different origins. Such as: when you follow a link on a web page, or encounter a &amp;lt;img&amp;gt; tag which points to an image on a different domain. These interactions can be classified into three categories:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Cross-origin writes are generally allowed. Such as: links, redirections and form submissions. &lt;/li&gt;
+  &lt;li&gt;Cross-origin reads are typically not allowed, but this can be leaked by embedding (below). &lt;/li&gt;
+  &lt;li&gt;Cross-origin embeddings are typically allowed. &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Here are some examples of cross-origin embedding:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;JavaScript with &lt;em&gt;&amp;lt;script src=”…”&amp;gt;&amp;lt;/script&amp;gt;&lt;/em&gt;. It is worth highlighting that error messages for syntax errors are only available on same-origin scripts.&lt;/li&gt;
+  &lt;li&gt;Images with &lt;em&gt;&amp;lt;img&amp;gt;&lt;/em&gt;.&lt;/li&gt;
+  &lt;li&gt;Media files with &lt;em&gt;&amp;lt;video&amp;gt;&lt;/em&gt; and &lt;em&gt;&amp;lt;audio&amp;gt;&lt;/em&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;cross-origin-resource-sharing-cors&quot;&gt;Cross-origin resource sharing (CORS)&lt;/h3&gt;
+
+&lt;p&gt;The &lt;a href=&quot;http://www.w3.org/2008/webapps/&quot;&gt;Web Application Working Group&lt;/a&gt; has recommended the new &lt;a href=&quot;http://www.w3.org/TR/cors/&quot;&gt;Cross-Origin Resource Sharing&lt;/a&gt; (CORS) mechanism. It provides a way for web servers to support cross-site access controls and enable secure cross-site data transfers. &lt;/p&gt;
+
+&lt;p&gt;The CORS standard works by adding new HTTP headers that allow servers to describe the set of origins that are permitted to read that information using a web browser. Additionally, for HTTP request methods can cause side-effects on user data, for example, HTTP methods other than GET, HEAD or POST with certain mime types, the standard requires the browsers to ‘preflight’ the request. ‘preflight’ basically sends an HTTP OPTIONS request method to the server first, then once the server ‘approves’ the request, it sends the actually request to the server. The server can also notify the clients whether the Cookies or HTTP authentication data should be sent with requests. &lt;/p&gt;
+
+&lt;h3 id=&quot;cors-code-example&quot;&gt;CORS code example&lt;/h3&gt;
+
+&lt;p&gt;Going back the code added by my colleague, It is easy to follow if you know a bit about Java Servlet and its filter (Original implementation can be found in a &lt;a href=&quot;https://spring.io/guides/gs/rest-service-cors/&quot;&gt;blog post&lt;/a&gt; from Spring Framework. &lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/ruiwanguk/bd5f0274f3c547e9b156.js&quot;&gt;&lt;/script&gt;
+
+&lt;p&gt;From the code, you can see that CORS is archived by adding four HTTP response headers:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Access-Control-Allow-Origin: *
+
+Access-Control-Allow-Methods: POST, GET, OPTIONS, DELETE
+
+Access-Control-Max-Age: 3600
+
+Access-Control-Allow-Headers: x-requested-with
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;Access-Control-Allow-Origin&lt;/strong&gt; header defines domains that are allowed as the origin. In this case, we are allowing any domain using a wild card. &lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Access-Control-Allow-Methods&lt;/strong&gt; header defines the HTTP methods that are allowed. Here, we are allowing POST, GET, OPTIONS and DELETE.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Access-Control-Max-Age&lt;/strong&gt; header indicates how long the results of a preflight request can be cached in seconds. We are allowing 1 hour in this case. &lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Access-Control-Allow-Headers&lt;/strong&gt; is used in response to a preflight request to indicate which HTTP headers to be used when making the actual request. &lt;/p&gt;
+
+&lt;p&gt;There are also two other headers which were not used in our code example. &lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Access-Control-Allow-Credentials: true
+Access-Control-Expose-Headers: X-My-Custom-Header, X-Another-Custom-Header     
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;Access-Control-Allow-Credentials&lt;/strong&gt; indicates whether or not the response can be exposed when the credential is used. &lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Access-Control-Expose-Headers&lt;/strong&gt; header lets the server whitelist headers that browsers are allowed to access. The above example allows &lt;em&gt;X-My-Custom-Header&lt;/em&gt; and &lt;em&gt;X-Another-Custom-Header&lt;/em&gt;. &lt;/p&gt;
+
+&lt;h3 id=&quot;other-resources&quot;&gt;Other resources&lt;/h3&gt;
+&lt;p&gt;&lt;a href=&quot;https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS&quot;&gt;HTTP access control (CORS)&lt;/a&gt; provides a general description and a good example on how to enable CORS.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.w3.org/TR/cors/&quot;&gt;Cross-Origin Resource Sharing Standard&lt;/a&gt; is the official standard by W3C published in 16 Jan 2014.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy&quot;&gt;Same-Origin Policy&lt;/a&gt; explains the policy in details. &lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://arunranga.com/examples/access-control/&quot;&gt;CORS in action&lt;/a&gt; provides examples for CORS access.&lt;/p&gt;
+</description>
+        <pubDate>Tue, 11 Nov 2014 20:27:19 +0000</pubDate>
+        <link>http://ruiwanguk.github.com/web/2014/11/11/http-access-control/</link>
+        <guid isPermaLink="true">http://ruiwanguk.github.com/web/2014/11/11/http-access-control/</guid>
+      </item>
+    
+      <item>
         <title>Constructor in JavaScript</title>
-        <description>&lt;p&gt;Constructor in JavaScript is often a source of confusion for people new to the language. Particularly if coming from a classical languages (such as Java or C#), it can feel a bit alien at first. This post is aimed at clarifying the mechanical details behind the constructor, also serves as a self reminder on the inner workings of JavaScript. &lt;/p&gt;
+        <description>&lt;p&gt;Constructor in JavaScript is often a source of confusion for people new to the language. Particularly if coming from a classical language (such as Java or C#), it can feel a bit alien at first. This post is aimed at clarifying the mechanical details behind the constructor, also serves as a self reminder on the inner workings of JavaScript. &lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;Friendly warning&lt;/strong&gt;: Please make sure you have some basic understanding of JavaScript before reading further. &lt;/p&gt;
 

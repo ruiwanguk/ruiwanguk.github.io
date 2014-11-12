@@ -6,7 +6,7 @@ summary:    Constructor in JavaScript can be a source of confusion for beginners
 categories: JavaScript
 ---
 
-Constructor in JavaScript is often a source of confusion for people new to the language. Particularly if coming from a classical languages (such as Java or C#), it can feel a bit alien at first. This post is aimed at clarifying the mechanical details behind the constructor, also serves as a self reminder on the inner workings of JavaScript. 
+Constructor in JavaScript is often a source of confusion for people new to the language. Particularly if coming from a classical language (such as Java or C#), it can feel a bit alien at first. This post is aimed at clarifying the mechanical details behind the constructor, also serves as a self reminder on the inner workings of JavaScript. 
 
 **Friendly warning**: Please make sure you have some basic understanding of JavaScript before reading further. 
 

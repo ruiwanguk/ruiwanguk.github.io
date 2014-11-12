@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Cross-Origin Resource Sharing (CORS) &#8211; Rui Wang's Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Cross-origin resource sharing is commonly used by modern web applications, to make cross domain requests for script, image or data.">
+    <meta name="author" content="Rui Wang">
+    <meta name="keywords" content="web">
+    <link rel="canonical" href="http://ruiwanguk.github.com/web/2014/11/11/http-access-control/">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/pixyll.css" type="text/css">
+
+    <!-- RSS feed -->
+    <link rel="alternate" type="application/rss+xml" title="Rui Wang's Blog" href="http://ruiwanguk.github.com/feed.xml">
+
+    <!-- Fonts -->
+    <link href='//fonts.googleapis.com/css?family=Merriweather:900,900italic,300,300italic' rel='stylesheet' type='text/css'>
+    <link href='//fonts.googleapis.com/css?family=Lato:900,300' rel='stylesheet' type='text/css'>
+    
+      <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    
+
+    <!-- Open Graph -->
+    <!-- From: https://github.com/mmistakes/hpstr-jekyll-theme/blob/master/_includes/head.html -->
+    <meta property="og:locale" content="en_US">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Cross-Origin Resource Sharing (CORS)">
+    <meta property="og:description" content="Hi there, I am Rui Wang. A software developer from Cambridge UK. I write about software development and architecture.">
+    <meta property="og:url" content="http://ruiwanguk.github.com/web/2014/11/11/http-access-control/">
+    <meta property="og:site_name" content="Rui Wang's Blog">
+</head>
+
+<body class="">
+  <div class="site-wrap">
+    <header class="site-header px2 px-responsive">
+  <div class="mt2 wrap">
+    <div class="measure">
+      <a href="http://ruiwanguk.github.com" class="site-title">Rui Wang's Blog</a>
+      <nav class="site-nav right">
+        
+  <a class="fa fa-github" href="https://github.com/ruiwanguk"></a>
+
+
+<a class="fa fa-rss" href="/feed.xml"></a>
+
+
+  <a class="fa fa-twitter" href="https://twitter.com/ruiwang_cn"></a>
+
+
+
+
+
+  <a class="fa fa-envelope" href="mailto:harry.r.wang@gmail.com"></a>
+
+
+
+  <a class="fa fa-linkedin" href="https://www.linkedin.com/in/ruiwanguk"></a>
+
+
+<a href="/about/">About</a>
+
+      </nav>
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</header>
+
+
+    <div class="post p2 p-responsive wrap" role="main">
+      <div class="measure">
+        
+
+
+<div class="post-header mb2">
+  <h1 class="py2">Cross-Origin Resource Sharing (CORS)</h1>
+  <span class="post-meta">Nov 11, 2014</span><br>
+  
+  <span class="post-meta small">4 minute read</span>
+</div>
+
+<article class="post-content">
+  <p>While implementing the new version of PRIDE Cluster website, a colleague of mine added a simple implementation (see code below) of Cross-Origin Resource Sharing (CORS) into the web service. This got me a bit curious and decided to do a bit research around this topic.  </p>
+
+<p>First, let’s start from the origin of the problem. </p>
+
+<h3 id="same-origin-policy">Same-origin policy</h3>
+
+<p>The same-origin policy restricts how a document or script loaded from one origin can interact with a resource from another origin. The primarily used as a way of preventing the <a href="http://en.wikipedia.org/wiki/Cross-site_request_forgery">Cross-site Request Forgery</a> attack. </p>
+
+<p>By definition, two documents have the same origin if the access protocol, port (if one is specified) and host are the same. </p>
+
+<p>For example, if you have a page: <em>http://www.ebi.ac.uk/pride</em> is trying to access a web service at <em>http://www.ebi.ac.uk/pride/ws/archive/project/PXD000001</em>, this will not be blocked by the browser’s same origin component. </p>
+
+<p>However, if you deploy the web service under another domain, <em>http://www.proteomexchange.org/pride/ws/archive/project/PXD000001</em>, this request will be automatically blocked. </p>
+
+<p>Now, there are exceptions to these rules depending on the browser, and these exceptions are often non-standard. For instance in Internet Explorer, it has two exceptions:</p>
+
+<ol>
+  <li>Trust zone: if both domains are in highly trusted zone. e.g. corporate domains. The same-origin policy will not apply. </li>
+  <li>Port: IE doesn’t include port as part of their same-origin component. Therefore, for <em>http://www.ebi.ac.uk:8080/pride</em> can access content stored at <em>http://www.ebi.ac.uk:8081/pride</em>. </li>
+</ol>
+
+<h3 id="cross-origin-network-access">Cross-origin network access</h3>
+
+<p>The same-origin policy controls the interactions between two different origins. Such as: when you follow a link on a web page, or encounter a &lt;img&gt; tag which points to an image on a different domain. These interactions can be classified into three categories:</p>
+
+<ol>
+  <li>Cross-origin writes are generally allowed. Such as: links, redirections and form submissions. </li>
+  <li>Cross-origin reads are typically not allowed, but this can be leaked by embedding (below). </li>
+  <li>Cross-origin embeddings are typically allowed. </li>
+</ol>
+
+<p>Here are some examples of cross-origin embedding:</p>
+
+<ol>
+  <li>JavaScript with <em>&lt;script src=”…”&gt;&lt;/script&gt;</em>. It is worth highlighting that error messages for syntax errors are only available on same-origin scripts.</li>
+  <li>Images with <em>&lt;img&gt;</em>.</li>
+  <li>Media files with <em>&lt;video&gt;</em> and <em>&lt;audio&gt;</em>.</li>
+</ol>
+
+<h3 id="cross-origin-resource-sharing-cors">Cross-origin resource sharing (CORS)</h3>
+
+<p>The <a href="http://www.w3.org/2008/webapps/">Web Application Working Group</a> has recommended the new <a href="http://www.w3.org/TR/cors/">Cross-Origin Resource Sharing</a> (CORS) mechanism. It provides a way for web servers to support cross-site access controls and enable secure cross-site data transfers. </p>
+
+<p>The CORS standard works by adding new HTTP headers that allow servers to describe the set of origins that are permitted to read that information using a web browser. Additionally, for HTTP request methods can cause side-effects on user data, for example, HTTP methods other than GET, HEAD or POST with certain mime types, the standard requires the browsers to ‘preflight’ the request. ‘preflight’ basically sends an HTTP OPTIONS request method to the server first, then once the server ‘approves’ the request, it sends the actually request to the server. The server can also notify the clients whether the Cookies or HTTP authentication data should be sent with requests. </p>
+
+<h3 id="cors-code-example">CORS code example</h3>
+
+<p>Going back the code added by my colleague, It is easy to follow if you know a bit about Java Servlet and its filter (Original implementation can be found in a <a href="https://spring.io/guides/gs/rest-service-cors/">blog post</a> from Spring Framework. </p>
+
+<script src="https://gist.github.com/ruiwanguk/bd5f0274f3c547e9b156.js"></script>
+
+<p>From the code, you can see that CORS is archived by adding four HTTP response headers:</p>
+
+<pre><code>Access-Control-Allow-Origin: *
+
+Access-Control-Allow-Methods: POST, GET, OPTIONS, DELETE
+
+Access-Control-Max-Age: 3600
+
+Access-Control-Allow-Headers: x-requested-with
+</code></pre>
+
+<p><strong>Access-Control-Allow-Origin</strong> header defines domains that are allowed as the origin. In this case, we are allowing any domain using a wild card. </p>
+
+<p><strong>Access-Control-Allow-Methods</strong> header defines the HTTP methods that are allowed. Here, we are allowing POST, GET, OPTIONS and DELETE.</p>
+
+<p><strong>Access-Control-Max-Age</strong> header indicates how long the results of a preflight request can be cached in seconds. We are allowing 1 hour in this case. </p>
+
+<p><strong>Access-Control-Allow-Headers</strong> is used in response to a preflight request to indicate which HTTP headers to be used when making the actual request. </p>
+
+<p>There are also two other headers which were not used in our code example. </p>
+
+<pre><code>Access-Control-Allow-Credentials: true
+Access-Control-Expose-Headers: X-My-Custom-Header, X-Another-Custom-Header     
+</code></pre>
+
+<p><strong>Access-Control-Allow-Credentials</strong> indicates whether or not the response can be exposed when the credential is used. </p>
+
+<p><strong>Access-Control-Expose-Headers</strong> header lets the server whitelist headers that browsers are allowed to access. The above example allows <em>X-My-Custom-Header</em> and <em>X-Another-Custom-Header</em>. </p>
+
+<h3 id="other-resources">Other resources</h3>
+<p><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS">HTTP access control (CORS)</a> provides a general description and a good example on how to enable CORS.</p>
+
+<p><a href="http://www.w3.org/TR/cors/">Cross-Origin Resource Sharing Standard</a> is the official standard by W3C published in 16 Jan 2014.</p>
+
+<p><a href="https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy">Same-Origin Policy</a> explains the policy in details. </p>
+
+<p><a href="http://arunranga.com/examples/access-control/">CORS in action</a> provides examples for CORS access.</p>
+
+</article>
+
+
+
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+  <div class="p2 wrap">
+    <div class="measure mt1 center">
+      <small>
+        Written by <a href="http://ruiwanguk.github.com">Rui Wang</a> (<a href="https://twitter.com/ruiwang_cn">@ruiwang_cn</a>).<br>
+        Available on <a href="https://github.com/ruiwanguk">Github</a>.
+      </small>
+    </div>
+  </div>
+</footer>
+
+
+
+</body>
+</html>
