@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Understand Hadoop build-in counters &#8211; Rui Wang's Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Hadoop build-in counters are often the starting point of diagnose Hadoop jobs, understanding the meaning of these counters and their relationships is the key.">
+    <meta name="author" content="Rui Wang">
+    <meta name="keywords" content="bigdata, hadoop">
+    <link rel="canonical" href="http://ruiwanguk.github.com/bigdata/hadoop/2014/11/19/hadoop-build-in-counter/">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/pixyll.css" type="text/css">
+
+    <!-- RSS feed -->
+    <link rel="alternate" type="application/rss+xml" title="Rui Wang's Blog" href="http://ruiwanguk.github.com/feed.xml">
+
+    <!-- Fonts -->
+    <link href='//fonts.googleapis.com/css?family=Merriweather:900,900italic,300,300italic' rel='stylesheet' type='text/css'>
+    <link href='//fonts.googleapis.com/css?family=Lato:900,300' rel='stylesheet' type='text/css'>
+    
+      <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    
+
+    <!-- Open Graph -->
+    <!-- From: https://github.com/mmistakes/hpstr-jekyll-theme/blob/master/_includes/head.html -->
+    <meta property="og:locale" content="en_US">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Understand Hadoop build-in counters">
+    <meta property="og:description" content="Hi there, I am Rui Wang. A software developer from Cambridge UK. I write about software development and architecture.">
+    <meta property="og:url" content="http://ruiwanguk.github.com/bigdata/hadoop/2014/11/19/hadoop-build-in-counter/">
+    <meta property="og:site_name" content="Rui Wang's Blog">
+</head>
+
+<body class="">
+  <div class="site-wrap">
+    <header class="site-header px2 px-responsive">
+  <div class="mt2 wrap">
+    <div class="measure">
+      <a href="http://ruiwanguk.github.com" class="site-title">Rui Wang's Blog</a>
+      <nav class="site-nav right">
+        
+  <a class="fa fa-github" href="https://github.com/ruiwanguk"></a>
+
+
+<a class="fa fa-rss" href="/feed.xml"></a>
+
+
+  <a class="fa fa-twitter" href="https://twitter.com/ruiwang_cn"></a>
+
+
+
+
+
+  <a class="fa fa-envelope" href="mailto:harry.r.wang@gmail.com"></a>
+
+
+
+  <a class="fa fa-linkedin" href="https://www.linkedin.com/in/ruiwanguk"></a>
+
+
+<a href="/about/">About</a>
+
+      </nav>
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</header>
+
+
+    <div class="post p2 p-responsive wrap" role="main">
+      <div class="measure">
+        
+
+
+<div class="post-header mb2">
+  <h1 class="py2">Understand Hadoop build-in counters</h1>
+  <span class="post-meta">Nov 19, 2014</span><br>
+  
+  <span class="post-meta small">4 minute read</span>
+</div>
+
+<article class="post-content">
+  <p>Finding the performance bottleneck of a Hadoop job can be tricky. <a href="https://www.inkling.com/read/hadoop-definitive-guide-tom-white-3rd/chapter-8/counters">Counters</a> are often a quick and cheap way of gathering statistics across all the mappers and reducers. This makes them particularly useful for problem diagnosis. By default, Hadoop provides a set of built-in counters for every job. In this post, I will try to explain the purpose of each counter, and how to combine them to make informed judgment about the job.  </p>
+
+<h3 id="case-study">Case study</h3>
+<p>Through out this post, I will try to use the <a href="https://code.google.com/p/spectra-cluster/">PRIDE Cluster</a> project as a example. The project is an implementation of spectrum clustering algorithm using Hadoop. The input consists of a group of spectra produced by mass spectrometer, the outputs are clusters of spectra. The algorithm tries to cluster spectra together based on their similarity. </p>
+
+<p>The Hadoop implementation consists of three clustering jobs and one output job. Clustering jobs group spectra together using different pre-conditions, either they are sharing the same highest peak or they falls into the same m/z window. The output job writes out the clusters into a customized output format for downstream database loading and data analysis. </p>
+
+<h3 id="mapper-counters">Mapper counters</h3>
+<p><strong>Map input records</strong>: The number of key-value pairs consumed by all the mapper tasks. It is incremented every time there is a new pair been passed to a mapper to process. This counter shows you the number of entries has been parsed from your dataset. In the case of PRIDE Cluster, we have a job to read a large number of spectra produced by mass spectrometer. This counter would tell us that how many spectra have been read.  </p>
+
+<p><strong>Map output records</strong>: The number of key-value pairs produced by all the mapper tasks. It is incremented every time when you call <em>context.write()</em> method in your mapper. In case of PRIDE Cluster, the output of each mapper is either spectra or clusters produced by previous steps. This counter would show the number of spectra/clusters have been sent to the reducers. </p>
+
+<p><strong>Map output bytes</strong>: The total number of bytes send by all the mapper tasks to the reducers. In PRIDE Cluster, this would tell us whether the data has been produced properly, if this number of too low, this means something is wrong with either the loading process or the mapping process.</p>
+
+<h3 id="reducer-counters">Reducer counters</h3>
+<p><strong>Reduce input groups</strong>: The number of key groups consumed by all the reducer tasks. It is incremented every time a new key has been passed into the reducer. For PRIDE Cluster, a group of spectra may share one highest peak, this highest peak is used to group these spectra together for reducing. </p>
+
+<p><strong>Reduce input records</strong>: This is the number of key-value pairs passed to all the reducers. It is incremented every time when a new value has been consumed. In PRIDE Cluster, the values are clusters produced by the mappers. </p>
+
+<p><strong>Reduce output records</strong>: The number of reduce outputs generated by all the reducer tasks. It is incremented every time when <em>context.write()</em> was called in reducer. This counter is particular useful for PRIDE Cluster jobs, as it tells us how many clusters in total have been produced.</p>
+
+<p>Sometimes, combining the results of two counters can give optimization hints. For example, if the “Reduce input groups” counter is significantly smaller than the ‘Reduce input records’ counter, this often indicates there were a lot network shuffling. It might be a good idea to consider writing a combiner to reduce the network traffic.</p>
+
+<h3 id="combiner-counters">Combiner counters</h3>
+<p>Combiners can be considered as mini-reducers. Instead of sending every key-value pairs across the network, combiners are run on the same instance of the mapper, before sending key-value pair for shuffling. A customized combiner can be extremely useful on reducing network traffic during a Hadoop job.</p>
+
+<p><strong>Combine input records</strong>: The number of input records consumed by all the combiners. Incremented every time there is a value consumed by the combiner.</p>
+
+<p><strong>Combine output records</strong>: The number of output records produced by all the combiners. Incremented every time there is a value been written out.</p>
+
+<p>Combining these two counters, you can often infer the effectiveness of the combiners. </p>
+
+<h3 id="other-counters">Other counters</h3>
+
+<p><strong>Spilled records</strong>: The number of records spilled to disk for all mappers and reducers.</p>
+
+<h3 id="other-resources">Other resources</h3>
+<p><a href="http://blog.cloudera.com/blog/2009/12/7-tips-for-improving-mapreduce-performance/">7 Tips for Improving MapReduce Performance</a></p>
+
+<p><a href="https://www.inkling.com/read/hadoop-definitive-guide-tom-white-3rd/chapter-8/counters">Hadoop: The Definetive Guide</a></p>
+
+<p><a href="http://www.philippeadjiman.com/blog/2010/01/14/hadoop-tutorial-series-issue-4-to-use-or-not-to-use-a-combiner/">To use or not to use a combiner</a></p>
+
+</article>
+
+
+
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+  <div class="p2 wrap">
+    <div class="measure mt1 center">
+      <small>
+        Written by <a href="http://ruiwanguk.github.com">Rui Wang</a> (<a href="https://twitter.com/ruiwang_cn">@ruiwang_cn</a>).<br>
+        Available on <a href="https://github.com/ruiwanguk">Github</a>.
+      </small>
+    </div>
+  </div>
+</footer>
+
+
+
+</body>
+</html>
