@@ -7,6 +7,98 @@
     <atom:link href="http://ruiwanguk.github.com/feed.xml" rel="self" type="application/rss+xml" />
     
       <item>
+        <title>/dev/winter</title>
+        <description>&lt;p&gt;Below are my notes on &lt;a href=&quot;http://devcycles.net/2015/winter/&quot; title=&quot;dev winter&quot;&gt;/dev/winter&lt;/a&gt; 2015, a free, one-day event for software developers in Cambridge area.&lt;/p&gt;
+
+&lt;h3 id=&quot;overall&quot;&gt;Overall&lt;/h3&gt;
+
+&lt;p&gt;The conference is well organized, right mix of people, good venue and food. The balance feels right, the &lt;a href=&quot;http://devcycles.net/2015/winter/programme/&quot; title=&quot;dev winter programme&quot;&gt;programme&lt;/a&gt; has a range of talks from machine learning to software design while maintaining practicability.&lt;/p&gt;
+
+&lt;h3 id=&quot;first-session-modeling-complex-game-economy-with-neo4j&quot;&gt;First session: Modeling complex game economy with Neo4j&lt;/h3&gt;
+
+&lt;p&gt;The first talk, given by &lt;a href=&quot;http://theburningmonk.com/&quot;&gt;Yan Cui&lt;/a&gt; from &lt;a href=&quot;http://www.gamesyscorporate.com/&quot;&gt;Gamesys&lt;/a&gt;, was both clear and informative. Yan showed us how you could use &lt;a href=&quot;http://neo4j.com/&quot;&gt;Neo4j&lt;/a&gt;, a NOSQL database for graph data, to help on modeling and balancing the economy of a large scale on-line game. &lt;/p&gt;
+
+&lt;p&gt;The key takeaway messages are:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;Use Neo4j to model the play content as a interconnected network. Each play item will be represented as a node, whereas the edge between the nodes describes the relationship between the items. For example, to make a bread you need some flour, both bread and flour will be a separate node in the play content network. Therefore, if you change the price of the flour, the price of the bread will also be affected. This effect can be investigated using simple Neo4j queries. &lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Neo4j can only be run on one machine, and cannot be partitioned into different machines.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;GameSys is using &lt;a href=&quot;http://en.wikipedia.org/wiki/Genetic_algorithm&quot;&gt;genetic algorithmm&lt;/a&gt; written in &lt;a href=&quot;http://fsharp.org/&quot;&gt;F#&lt;/a&gt; to model and propose solutions for balancing the game playability. &lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;GameSys’s entire system is based on &lt;a href=&quot;http://aws.amazon.com/ec2/&quot;&gt;Amazon EC2&lt;/a&gt;. They are using technologies such as: &lt;a href=&quot;http://aws.amazon.com/dynamodb/&quot;&gt;Amazon DynamoDB&lt;/a&gt;, &lt;a href=&quot;http://memcached.org/&quot;&gt;MemCached&lt;/a&gt;, &lt;a href=&quot;http://couchdb.apache.org/&quot;&gt;CouchDB&lt;/a&gt;.  &lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;second-session-git-for-teams-of-one-or-more&quot;&gt;Second session: Git for teams of one or more&lt;/h3&gt;
+
+&lt;p&gt;I picked this practical session since our team is making the transition from SVN to Git. &lt;a href=&quot;https://twitter.com/emmajanehw&quot;&gt;Emma Jane&lt;/a&gt;, the workshop organizer, has been doing training on source control system for many years. You can find her slides &lt;a href=&quot;http://gitforteams.com/workshops/devwinter&quot;&gt;here&lt;/a&gt;, and she is also writing a book, called &lt;a href=&quot;http://gitforteams.com/resources/offsite.html&quot;&gt;Git for Teams&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;The key takeaway messages are:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Documentation on agreed git workflow is necessary for the team. This document should outline how the team members interact with the code. It should also provide a governance strategy and branching strategy for the project.&lt;/li&gt;
+  &lt;li&gt;Different branching strategies for different use cases. If you are doing scheduled release, you can use either &lt;a href=&quot;http://nvie.com/posts/a-successful-git-branching-model/&quot;&gt;Gitflow&lt;/a&gt; or &lt;a href=&quot;http://drewfradette.ca/a-simpler-successful-git-branching-model/&quot;&gt;Simplified Gitflow&lt;/a&gt;. If you are doing constant integration, you can choose either &lt;a href=&quot;https://www.acquia.com/blog/pragmatic-guide-branch-feature-git-branching-strategy&quot;&gt;Branch Per Feature&lt;/a&gt; or &lt;a href=&quot;http://scottchacon.com/2011/08/31/github-flow.html&quot;&gt;GitHub Flow&lt;/a&gt;.&lt;/li&gt;
+  &lt;li&gt;To view the commit history and the relations between different commits, there are several tools you can use: &lt;a href=&quot;http://git-scm.com/docs/git-log&quot;&gt;log&lt;/a&gt;, &lt;a href=&quot;http://git-scm.com/docs/gitk&quot;&gt;gitk&lt;/a&gt;, &lt;a href=&quot;http://git-scm.com/docs/git-blame&quot;&gt;blame&lt;/a&gt; and &lt;a href=&quot;http://git-scm.com/docs/git-bisect&quot;&gt;bisect&lt;/a&gt;. &lt;/li&gt;
+  &lt;li&gt;Emma highlighted the differences between &lt;a href=&quot;http://stackoverflow.com/questions/16666089/whats-the-difference-between-git-merge-and-git-rebase&quot;&gt;merging and rebasing&lt;/a&gt;. She recommended against using rebasing if it does not provide additional benefits for the team.  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;third-session-java-is-dead-long-live-scala-kotlin-ceylon-etc&quot;&gt;Third session: Java is dead, long live Scala, Kotlin, Ceylon, etc&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.russel.org.uk/&quot;&gt;Russel Winder&lt;/a&gt; showed the differences between several JVM based languages, namely Java, Scala, Kotlin, Ceylon, Groovy, Fantom and Goush. The demo was based on approximating pi using quadrature. The main idea is to investigate scaling to see how different languages solve this parallel problem. You can find all his code examples from &lt;a href=&quot;https://github.com/russel/Pi_Quadrature&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;The key messages are:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Scala has its own implementation of data structures, whereas Kotlin is using Java’s native data structures. &lt;/li&gt;
+  &lt;li&gt;Groovy can now be run on Android, all its nice functional programming features are already available and can be used on Android devices directly. &lt;/li&gt;
+  &lt;li&gt;Groovy is not as slow as before, it offers comparable performance to Java.&lt;/li&gt;
+  &lt;li&gt;Scala, Kotlin, Groovy are all offering functional-style parallelization. This lead however has been cut short since the introduction of Java 8. &lt;/li&gt;
+  &lt;li&gt;Upgrade to Java 8 to take advantage of &lt;a href=&quot;http://www.oracle.com/technetwork/tutorials/tutorials-1876574.html&quot;&gt;G1 garbage collector&lt;/a&gt;, &lt;a href=&quot;http://www.oracle.com/technetwork/articles/java/jf14-nashorn-2126515.html&quot;&gt;Nashorn&lt;/a&gt;, &lt;a href=&quot;http://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html&quot;&gt;Lambda&lt;/a&gt; features. &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;fourth-session-how-to-ditch-the-debugger-and-use-logging-instead&quot;&gt;Fourth session: How to ditch the debugger and use logging instead&lt;/h3&gt;
+
+&lt;p&gt;The main motivation behind this tutorial is to address the problem that one cannot attach the debugger to the application in Production, and debugging in a distributed environment is even more challenging. Logging can be used in a way which means you can diagnose problems very easily in both development and production.&lt;/p&gt;
+
+&lt;p&gt;The key messages are:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;Event tracing, which is a specialized use of logging to record information about a system’s execution. This tracing can be used to log different execution steps as well as record their performances. &lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;For any system, there are different types of events, these can be categorized as technical level events, e.g. database connection, out-of-memory, or domain level events, e.g. bank transaction, user login. Also, depending on the nature of the events, one can categorize them into unknown events or defined events. &lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;It is important to assign event type id for each event, as this will help to group and interpret the logs. In Java, a typical way of defining these event type IDs is to use &lt;em&gt;enum&lt;/em&gt;. When used in a distributed system, these event type IDs can be passed between different services, this will enable the developers to trace the events occurred on different systems. &lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;It can be difficult to choose a severity level (such as ERROR, WARNING, etc) for logging which will be appropriate for production, as the severity of an event type may need to be changed after the application has been deployed based on experience of running the application. Different environment (Dev, Test, Production) may also require different severity levels. Therefore, it is better to have the severity level of all events configurable. There is a nice blog &lt;a href=&quot;http://blog.matthewskelton.net/2012/12/05/tune-logging-levels-in-production-without-recompiling-code/&quot;&gt;post&lt;/a&gt; about how to archive this in the production system.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Event-tracing based logging using the Elasticsearch ELK Stack, which includes &lt;a href=&quot;http://www.elasticsearch.org/overview/elasticsearch&quot;&gt;Elasticsearch&lt;/a&gt;, &lt;a href=&quot;http://www.elasticsearch.org/overview/logstash&quot;&gt;Logstash&lt;/a&gt; and &lt;a href=&quot;http://www.elasticsearch.org/overview/kibana&quot;&gt;Kibana&lt;/a&gt;. Logstash takes logs and other event data from the systems and store them in a central place. Elasticsearch is then used for indexing the logs for searching and access. Kibana works with Elasticsearch to visualize logs and time-stamped data. &lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Use a virtual machine manager called &lt;a href=&quot;https://www.vagrantup.com/&quot;&gt;Vagrant&lt;/a&gt;, which allows the user to script virtual machine configuration as well as the provisioning, to setup the Elasticsearch ELK Stack. The demo can be found &lt;a href=&quot;https://github.com/SkeltonThatcher/velk-demo&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;remarks&quot;&gt;Remarks&lt;/h3&gt;
+&lt;p&gt;All in all, a very good one-day conference. Look forward to /dev/summer 2015. &lt;/p&gt;
+
+</description>
+        <pubDate>Thu, 29 Jan 2015 20:27:19 +0000</pubDate>
+        <link>http://ruiwanguk.github.com/conference/2015/01/29/notes-on-dev-winter/</link>
+        <guid isPermaLink="true">http://ruiwanguk.github.com/conference/2015/01/29/notes-on-dev-winter/</guid>
+      </item>
+    
+      <item>
         <title>Understand Hadoop build-in counters</title>
         <description>&lt;p&gt;Finding the performance bottleneck of a Hadoop job can be tricky. &lt;a href=&quot;https://www.inkling.com/read/hadoop-definitive-guide-tom-white-3rd/chapter-8/counters&quot;&gt;Counters&lt;/a&gt; are often a quick and cheap way of gathering statistics across all the mappers and reducers. This makes them particularly useful for problem diagnosis. By default, Hadoop provides a set of built-in counters for every job. In this post, I will try to explain the purpose of each counter, and how to combine them to make informed judgment about the job.  &lt;/p&gt;
 

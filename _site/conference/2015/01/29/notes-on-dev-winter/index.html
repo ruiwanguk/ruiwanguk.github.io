@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>/dev/winter &#8211; Rui Wang's Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="My notes on /dev/winter 2015, one-day conference on software development at Cambridge.">
+    <meta name="author" content="Rui Wang">
+    <meta name="keywords" content="conference">
+    <link rel="canonical" href="http://ruiwanguk.github.com/conference/2015/01/29/notes-on-dev-winter/">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/pixyll.css" type="text/css">
+
+    <!-- RSS feed -->
+    <link rel="alternate" type="application/rss+xml" title="Rui Wang's Blog" href="http://ruiwanguk.github.com/feed.xml">
+
+    <!-- Fonts -->
+    <link href='//fonts.googleapis.com/css?family=Merriweather:900,900italic,300,300italic' rel='stylesheet' type='text/css'>
+    <link href='//fonts.googleapis.com/css?family=Lato:900,300' rel='stylesheet' type='text/css'>
+    
+      <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    
+
+    <!-- Open Graph -->
+    <!-- From: https://github.com/mmistakes/hpstr-jekyll-theme/blob/master/_includes/head.html -->
+    <meta property="og:locale" content="en_US">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="/dev/winter">
+    <meta property="og:description" content="Hi there, I am Rui Wang. A software developer from Cambridge UK. I write about software development and architecture.">
+    <meta property="og:url" content="http://ruiwanguk.github.com/conference/2015/01/29/notes-on-dev-winter/">
+    <meta property="og:site_name" content="Rui Wang's Blog">
+</head>
+
+<body class="">
+  <div class="site-wrap">
+    <header class="site-header px2 px-responsive">
+  <div class="mt2 wrap">
+    <div class="measure">
+      <a href="http://ruiwanguk.github.com" class="site-title">Rui Wang's Blog</a>
+      <nav class="site-nav right">
+        
+  <a class="fa fa-github" href="https://github.com/ruiwanguk"></a>
+
+
+<a class="fa fa-rss" href="/feed.xml"></a>
+
+
+  <a class="fa fa-twitter" href="https://twitter.com/ruiwang_cn"></a>
+
+
+
+
+
+  <a class="fa fa-envelope" href="mailto:harry.r.wang@gmail.com"></a>
+
+
+
+  <a class="fa fa-linkedin" href="https://www.linkedin.com/in/ruiwanguk"></a>
+
+
+<a href="/about/">About</a>
+
+      </nav>
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</header>
+
+
+    <div class="post p2 p-responsive wrap" role="main">
+      <div class="measure">
+        
+
+
+<div class="post-header mb2">
+  <h1 class="py2">/dev/winter</h1>
+  <span class="post-meta">Jan 29, 2015</span><br>
+  
+  <span class="post-meta small">5 minute read</span>
+</div>
+
+<article class="post-content">
+  <p>Below are my notes on <a href="http://devcycles.net/2015/winter/" title="dev winter">/dev/winter</a> 2015, a free, one-day event for software developers in Cambridge area.</p>
+
+<h3 id="overall">Overall</h3>
+
+<p>The conference is well organized, right mix of people, good venue and food. The balance feels right, the <a href="http://devcycles.net/2015/winter/programme/" title="dev winter programme">programme</a> has a range of talks from machine learning to software design while maintaining practicability.</p>
+
+<h3 id="first-session-modeling-complex-game-economy-with-neo4j">First session: Modeling complex game economy with Neo4j</h3>
+
+<p>The first talk, given by <a href="http://theburningmonk.com/">Yan Cui</a> from <a href="http://www.gamesyscorporate.com/">Gamesys</a>, was both clear and informative. Yan showed us how you could use <a href="http://neo4j.com/">Neo4j</a>, a NOSQL database for graph data, to help on modeling and balancing the economy of a large scale on-line game. </p>
+
+<p>The key takeaway messages are:</p>
+
+<ol>
+  <li>
+    <p>Use Neo4j to model the play content as a interconnected network. Each play item will be represented as a node, whereas the edge between the nodes describes the relationship between the items. For example, to make a bread you need some flour, both bread and flour will be a separate node in the play content network. Therefore, if you change the price of the flour, the price of the bread will also be affected. This effect can be investigated using simple Neo4j queries. </p>
+  </li>
+  <li>
+    <p>Neo4j can only be run on one machine, and cannot be partitioned into different machines.</p>
+  </li>
+  <li>
+    <p>GameSys is using <a href="http://en.wikipedia.org/wiki/Genetic_algorithm">genetic algorithmm</a> written in <a href="http://fsharp.org/">F#</a> to model and propose solutions for balancing the game playability. </p>
+  </li>
+  <li>
+    <p>GameSys’s entire system is based on <a href="http://aws.amazon.com/ec2/">Amazon EC2</a>. They are using technologies such as: <a href="http://aws.amazon.com/dynamodb/">Amazon DynamoDB</a>, <a href="http://memcached.org/">MemCached</a>, <a href="http://couchdb.apache.org/">CouchDB</a>.  </p>
+  </li>
+</ol>
+
+<h3 id="second-session-git-for-teams-of-one-or-more">Second session: Git for teams of one or more</h3>
+
+<p>I picked this practical session since our team is making the transition from SVN to Git. <a href="https://twitter.com/emmajanehw">Emma Jane</a>, the workshop organizer, has been doing training on source control system for many years. You can find her slides <a href="http://gitforteams.com/workshops/devwinter">here</a>, and she is also writing a book, called <a href="http://gitforteams.com/resources/offsite.html">Git for Teams</a>.</p>
+
+<p>The key takeaway messages are:</p>
+
+<ol>
+  <li>Documentation on agreed git workflow is necessary for the team. This document should outline how the team members interact with the code. It should also provide a governance strategy and branching strategy for the project.</li>
+  <li>Different branching strategies for different use cases. If you are doing scheduled release, you can use either <a href="http://nvie.com/posts/a-successful-git-branching-model/">Gitflow</a> or <a href="http://drewfradette.ca/a-simpler-successful-git-branching-model/">Simplified Gitflow</a>. If you are doing constant integration, you can choose either <a href="https://www.acquia.com/blog/pragmatic-guide-branch-feature-git-branching-strategy">Branch Per Feature</a> or <a href="http://scottchacon.com/2011/08/31/github-flow.html">GitHub Flow</a>.</li>
+  <li>To view the commit history and the relations between different commits, there are several tools you can use: <a href="http://git-scm.com/docs/git-log">log</a>, <a href="http://git-scm.com/docs/gitk">gitk</a>, <a href="http://git-scm.com/docs/git-blame">blame</a> and <a href="http://git-scm.com/docs/git-bisect">bisect</a>. </li>
+  <li>Emma highlighted the differences between <a href="http://stackoverflow.com/questions/16666089/whats-the-difference-between-git-merge-and-git-rebase">merging and rebasing</a>. She recommended against using rebasing if it does not provide additional benefits for the team.  </li>
+</ol>
+
+<h3 id="third-session-java-is-dead-long-live-scala-kotlin-ceylon-etc">Third session: Java is dead, long live Scala, Kotlin, Ceylon, etc</h3>
+
+<p><a href="http://www.russel.org.uk/">Russel Winder</a> showed the differences between several JVM based languages, namely Java, Scala, Kotlin, Ceylon, Groovy, Fantom and Goush. The demo was based on approximating pi using quadrature. The main idea is to investigate scaling to see how different languages solve this parallel problem. You can find all his code examples from <a href="https://github.com/russel/Pi_Quadrature">here</a>.</p>
+
+<p>The key messages are:</p>
+
+<ol>
+  <li>Scala has its own implementation of data structures, whereas Kotlin is using Java’s native data structures. </li>
+  <li>Groovy can now be run on Android, all its nice functional programming features are already available and can be used on Android devices directly. </li>
+  <li>Groovy is not as slow as before, it offers comparable performance to Java.</li>
+  <li>Scala, Kotlin, Groovy are all offering functional-style parallelization. This lead however has been cut short since the introduction of Java 8. </li>
+  <li>Upgrade to Java 8 to take advantage of <a href="http://www.oracle.com/technetwork/tutorials/tutorials-1876574.html">G1 garbage collector</a>, <a href="http://www.oracle.com/technetwork/articles/java/jf14-nashorn-2126515.html">Nashorn</a>, <a href="http://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html">Lambda</a> features. </li>
+</ol>
+
+<h3 id="fourth-session-how-to-ditch-the-debugger-and-use-logging-instead">Fourth session: How to ditch the debugger and use logging instead</h3>
+
+<p>The main motivation behind this tutorial is to address the problem that one cannot attach the debugger to the application in Production, and debugging in a distributed environment is even more challenging. Logging can be used in a way which means you can diagnose problems very easily in both development and production.</p>
+
+<p>The key messages are:</p>
+
+<ol>
+  <li>
+    <p>Event tracing, which is a specialized use of logging to record information about a system’s execution. This tracing can be used to log different execution steps as well as record their performances. </p>
+  </li>
+  <li>
+    <p>For any system, there are different types of events, these can be categorized as technical level events, e.g. database connection, out-of-memory, or domain level events, e.g. bank transaction, user login. Also, depending on the nature of the events, one can categorize them into unknown events or defined events. </p>
+  </li>
+  <li>
+    <p>It is important to assign event type id for each event, as this will help to group and interpret the logs. In Java, a typical way of defining these event type IDs is to use <em>enum</em>. When used in a distributed system, these event type IDs can be passed between different services, this will enable the developers to trace the events occurred on different systems. </p>
+  </li>
+  <li>
+    <p>It can be difficult to choose a severity level (such as ERROR, WARNING, etc) for logging which will be appropriate for production, as the severity of an event type may need to be changed after the application has been deployed based on experience of running the application. Different environment (Dev, Test, Production) may also require different severity levels. Therefore, it is better to have the severity level of all events configurable. There is a nice blog <a href="http://blog.matthewskelton.net/2012/12/05/tune-logging-levels-in-production-without-recompiling-code/">post</a> about how to archive this in the production system.</p>
+  </li>
+  <li>
+    <p>Event-tracing based logging using the Elasticsearch ELK Stack, which includes <a href="http://www.elasticsearch.org/overview/elasticsearch">Elasticsearch</a>, <a href="http://www.elasticsearch.org/overview/logstash">Logstash</a> and <a href="http://www.elasticsearch.org/overview/kibana">Kibana</a>. Logstash takes logs and other event data from the systems and store them in a central place. Elasticsearch is then used for indexing the logs for searching and access. Kibana works with Elasticsearch to visualize logs and time-stamped data. </p>
+  </li>
+  <li>
+    <p>Use a virtual machine manager called <a href="https://www.vagrantup.com/">Vagrant</a>, which allows the user to script virtual machine configuration as well as the provisioning, to setup the Elasticsearch ELK Stack. The demo can be found <a href="https://github.com/SkeltonThatcher/velk-demo">here</a>.</p>
+  </li>
+</ol>
+
+<h3 id="remarks">Remarks</h3>
+<p>All in all, a very good one-day conference. Look forward to /dev/summer 2015. </p>
+
+
+</article>
+
+
+
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+  <div class="p2 wrap">
+    <div class="measure mt1 center">
+      <small>
+        Written by <a href="http://ruiwanguk.github.com">Rui Wang</a> (<a href="https://twitter.com/ruiwang_cn">@ruiwang_cn</a>).<br>
+        Available on <a href="https://github.com/ruiwanguk">Github</a>.
+      </small>
+    </div>
+  </div>
+</footer>
+
+
+
+</body>
+</html>
