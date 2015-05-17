@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>On Technical Debt &#8211; Rui Wang's Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="What is technical debt? Why is it important? How to handle technical debts?">
+    <meta name="author" content="Rui Wang">
+    <meta name="keywords" content="software,, project, management">
+    <link rel="canonical" href="http://ruiwanguk.github.com/software,/project/management/2015/05/17/on-technical-debt/">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/pixyll.css" type="text/css">
+
+    <!-- RSS feed -->
+    <link rel="alternate" type="application/rss+xml" title="Rui Wang's Blog" href="http://ruiwanguk.github.com/feed.xml">
+
+    <!-- Fonts -->
+    <link href='//fonts.googleapis.com/css?family=Merriweather:900,900italic,300,300italic' rel='stylesheet' type='text/css'>
+    <link href='//fonts.googleapis.com/css?family=Lato:900,300' rel='stylesheet' type='text/css'>
+    
+      <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    
+
+    <!-- Open Graph -->
+    <!-- From: https://github.com/mmistakes/hpstr-jekyll-theme/blob/master/_includes/head.html -->
+    <meta property="og:locale" content="en_US">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="On Technical Debt">
+    <meta property="og:description" content="Hi there, I am Rui Wang. A software developer from Cambridge UK. I write about software development and architecture.">
+    <meta property="og:url" content="http://ruiwanguk.github.com/software,/project/management/2015/05/17/on-technical-debt/">
+    <meta property="og:site_name" content="Rui Wang's Blog">
+</head>
+
+<body class="">
+  <div class="site-wrap">
+    <header class="site-header px2 px-responsive">
+  <div class="mt2 wrap">
+    <div class="measure">
+      <a href="http://ruiwanguk.github.com" class="site-title">Rui Wang's Blog</a>
+      <nav class="site-nav right">
+        
+  <a class="fa fa-github" href="https://github.com/ruiwanguk"></a>
+
+
+<a class="fa fa-rss" href="/feed.xml"></a>
+
+
+  <a class="fa fa-twitter" href="https://twitter.com/ruiwang_cn"></a>
+
+
+
+
+
+  <a class="fa fa-envelope" href="mailto:harry.r.wang@gmail.com"></a>
+
+
+
+  <a class="fa fa-linkedin" href="https://www.linkedin.com/in/ruiwanguk"></a>
+
+
+<a href="/about/">About</a>
+
+      </nav>
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</header>
+
+
+    <div class="post p2 p-responsive wrap" role="main">
+      <div class="measure">
+        
+
+
+<div class="post-header mb2">
+  <h1 class="py2">On Technical Debt</h1>
+  <span class="post-meta">May 17, 2015</span><br>
+  
+  <span class="post-meta small">3 minute read</span>
+</div>
+
+<article class="post-content">
+  <h3 id="what-is-technical-debt">What is Technical Debt?</h3>
+
+<p>Technical debt represents the internal quality of a software project. This include too complex code, code duplication, lack of tests, violations found in static analysis and etc. </p>
+
+<p>To facilitate discussions with people from other domains, it is often introduced as a metaphor referencing the financial domain, where one views internal code quality problems as financial debt, the total amount of debt is the effort it would take to clean up the code base. Just like the normal debt that has interests, the longer you wait, the more effort it takes to solve the issue. </p>
+
+<h3 id="why-is-it-important">Why is it important?</h3>
+
+<p>From software engineering point of view, we all aim for good architecture and clean maintainable code when working on a project, we believe that by improving the quality of the code base will lead to increase in business values in the long run. </p>
+
+<p>If we don’t address the technical debts, they will inevitably surface up and backfire at some point. In the worst cases, they can render the whole team standstill.  </p>
+
+<p>What are the common misunderstanding of Technical Debt? </p>
+
+<p>Technical debts are often viewed as bad, and we should address these issues as early as possible. But is it really true? </p>
+
+<p>First of all, unlike financial debt, you don’t have to pay back the technical debts. If one piece of code or a component will remain unchanged, then it doesn’t make sense to re-factor the code, it will bring nothing in return for the business. Like any other long term software project, my team also have legacy systems and legacy tools, they are often not less used and causing us and our users no problems, so these cases, it doesn’t make sense to rewrite these code to make them better. </p>
+
+<p>Second, like financial debt, it can be a good thing to have technical debt. In finance, if your return in investment is higher than the amount you borrowed plus the interests, then it makes absolute sense to have the debt. Likewise, if you are building a software product and the time to market is very important, then it makes sense to sacrifice the quality for speed. In fact, a lot of successful companies, such Twitter, Facebook, and Amazon, they are constantly rewriting their system, but their time-to-market has yielded huge financial rewards.</p>
+
+<h3 id="how-should-we-approach-technical-debts">How should we approach technical debts?</h3>
+
+<p>Technical debts are unavoidable! For every project, there will be multiple external impact factors. There may well be time pressure, where developers are forced to make short-term gain by sacrificing the quality. Also, the experience of the team is not equal, there will be some senior developers and some junior developers, they will not produce the same level of quality code. Lastly, the technology is constantly improving, new techniques are created all the time. Even if your code is well designed, overtime, it could be that a new technique comes along and renders the code obsolete.  </p>
+
+<p>Rather than view technical debts as bad, one should view them as investment in the product. Investment in quality will have its benefits, at the same time, it will have associated cost. If the benefits out weight the cost, then the investment in quality should be made. However, if the cost is far higher than the benefits, then one should think again before act. </p>
+
+<h3 id="related-links">Related links</h3>
+
+<p><a href="http://martinfowler.com/bliki/TechnicalDebt.html">Technical debt</a></p>
+
+<p><a href="http://www.infoq.com/articles/managing-technical-debt">Managing technical debt</a></p>
+
+<p><a href="http://www.infoq.com/articles/no-more-technical-debt">No more technical debt - investment in quality</a></p>
+
+<p><a href="http://www.se-radio.net/2015/04/episode-224-sven-johann-and-eberhard-wolff-on-technical-debt/">Technical debt - Software Engineering Radio</a></p>
+
+</article>
+
+
+
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+  <div class="p2 wrap">
+    <div class="measure mt1 center">
+      <small>
+        Written by <a href="http://ruiwanguk.github.com">Rui Wang</a> (<a href="https://twitter.com/ruiwang_cn">@ruiwang_cn</a>).<br>
+        Available on <a href="https://github.com/ruiwanguk">Github</a>.
+      </small>
+    </div>
+  </div>
+</footer>
+
+
+
+</body>
+</html>
