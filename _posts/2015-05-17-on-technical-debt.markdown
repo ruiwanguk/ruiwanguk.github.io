@@ -18,7 +18,7 @@ From software engineering point of view, we all aim for good architecture and cl
 
 If we don't address the technical debts, they will inevitably surface up and backfire at some point. In the worst cases, they can render the whole team standstill.  
 
-What are the common misunderstanding of Technical Debt? 
+### What are the common misunderstandings of Technical Debt? 
 
 Technical debts are often viewed as bad, and we should address these issues as early as possible. But is it really true? 
 
