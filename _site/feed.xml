@@ -20,7 +20,7 @@
 
 &lt;p&gt;If we don’t address the technical debts, they will inevitably surface up and backfire at some point. In the worst cases, they can render the whole team standstill.  &lt;/p&gt;
 
-&lt;p&gt;What are the common misunderstanding of Technical Debt? &lt;/p&gt;
+&lt;h3 id=&quot;what-are-the-common-misunderstandings-of-technical-debt&quot;&gt;What are the common misunderstandings of Technical Debt?&lt;/h3&gt;
 
 &lt;p&gt;Technical debts are often viewed as bad, and we should address these issues as early as possible. But is it really true? &lt;/p&gt;
 
