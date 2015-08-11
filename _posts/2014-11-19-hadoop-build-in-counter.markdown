@@ -2,28 +2,28 @@
 layout:     post
 title:      Understand Hadoop build-in counters
 date:       2014-11-19 20:27:19
-summary:    Hadoop build-in counters are often the starting point of diagnose Hadoop jobs, understanding the meaning of these counters and their relationships is the key. 
-categories: BigData Hadoop
+summary:    Hadoop build-in counters are often the starting point of diagnose Hadoop jobs, understanding the meaning of these counters and their relationships is the key.
+categories: BigData
 ---
 
 Finding the performance bottleneck of a Hadoop job can be tricky. [Counters](https://www.inkling.com/read/hadoop-definitive-guide-tom-white-3rd/chapter-8/counters) are often a quick and cheap way of gathering statistics across all the mappers and reducers. This makes them particularly useful for problem diagnosis. By default, Hadoop provides a set of built-in counters for every job. In this post, I will try to explain the purpose of each counter, and how to combine them to make informed judgment about the job.  
 
 ### Case study
-Through out this post, I will try to use the [PRIDE Cluster](https://code.google.com/p/spectra-cluster/) project as a example. The project is an implementation of spectrum clustering algorithm using Hadoop. The input consists of a group of spectra produced by mass spectrometer, the outputs are clusters of spectra. The algorithm tries to cluster spectra together based on their similarity. 
+Through out this post, I will try to use the [PRIDE Cluster](https://code.google.com/p/spectra-cluster/) project as a example. The project is an implementation of spectrum clustering algorithm using Hadoop. The input consists of a group of spectra produced by mass spectrometer, the outputs are clusters of spectra. The algorithm tries to cluster spectra together based on their similarity.
 
-The Hadoop implementation consists of three clustering jobs and one output job. Clustering jobs group spectra together using different pre-conditions, either they are sharing the same highest peak or they falls into the same m/z window. The output job writes out the clusters into a customized output format for downstream database loading and data analysis. 
+The Hadoop implementation consists of three clustering jobs and one output job. Clustering jobs group spectra together using different pre-conditions, either they are sharing the same highest peak or they falls into the same m/z window. The output job writes out the clusters into a customized output format for downstream database loading and data analysis.
 
 ###Mapper counters
 **Map input records**: The number of key-value pairs consumed by all the mapper tasks. It is incremented every time there is a new pair been passed to a mapper to process. This counter shows you the number of entries has been parsed from your dataset. In the case of PRIDE Cluster, we have a job to read a large number of spectra produced by mass spectrometer. This counter would tell us that how many spectra have been read.  
 
-**Map output records**: The number of key-value pairs produced by all the mapper tasks. It is incremented every time when you call _context.write()_ method in your mapper. In case of PRIDE Cluster, the output of each mapper is either spectra or clusters produced by previous steps. This counter would show the number of spectra/clusters have been sent to the reducers. 
+**Map output records**: The number of key-value pairs produced by all the mapper tasks. It is incremented every time when you call _context.write()_ method in your mapper. In case of PRIDE Cluster, the output of each mapper is either spectra or clusters produced by previous steps. This counter would show the number of spectra/clusters have been sent to the reducers.
 
 **Map output bytes**: The total number of bytes send by all the mapper tasks to the reducers. In PRIDE Cluster, this would tell us whether the data has been produced properly, if this number of too low, this means something is wrong with either the loading process or the mapping process.
 
 ###Reducer counters
-**Reduce input groups**: The number of key groups consumed by all the reducer tasks. It is incremented every time a new key has been passed into the reducer. For PRIDE Cluster, a group of spectra may share one highest peak, this highest peak is used to group these spectra together for reducing. 
+**Reduce input groups**: The number of key groups consumed by all the reducer tasks. It is incremented every time a new key has been passed into the reducer. For PRIDE Cluster, a group of spectra may share one highest peak, this highest peak is used to group these spectra together for reducing.
 
-**Reduce input records**: This is the number of key-value pairs passed to all the reducers. It is incremented every time when a new value has been consumed. In PRIDE Cluster, the values are clusters produced by the mappers. 
+**Reduce input records**: This is the number of key-value pairs passed to all the reducers. It is incremented every time when a new value has been consumed. In PRIDE Cluster, the values are clusters produced by the mappers.
 
 **Reduce output records**: The number of reduce outputs generated by all the reducer tasks. It is incremented every time when _context.write()_ was called in reducer. This counter is particular useful for PRIDE Cluster jobs, as it tells us how many clusters in total have been produced.
 
@@ -36,7 +36,7 @@ Combiners can be considered as mini-reducers. Instead of sending every key-value
 
 **Combine output records**: The number of output records produced by all the combiners. Incremented every time there is a value been written out.
 
-Combining these two counters, you can often infer the effectiveness of the combiners. 
+Combining these two counters, you can often infer the effectiveness of the combiners.
 
 ###Other counters
 

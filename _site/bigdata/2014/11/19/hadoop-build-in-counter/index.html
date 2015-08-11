@@ -7,8 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Hadoop build-in counters are often the starting point of diagnose Hadoop jobs, understanding the meaning of these counters and their relationships is the key.">
     <meta name="author" content="Rui Wang">
-    <meta name="keywords" content="bigdata, hadoop">
-    <link rel="canonical" href="http://ruiwanguk.github.com/bigdata/hadoop/2014/11/19/hadoop-build-in-counter/">
+    <meta name="keywords" content="bigdata">
+    <link rel="canonical" href="http://ruiwanguk.github.com/bigdata/2014/11/19/hadoop-build-in-counter/">
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/css/pixyll.css" type="text/css">
@@ -29,7 +29,7 @@
     <meta property="og:type" content="article">
     <meta property="og:title" content="Understand Hadoop build-in counters">
     <meta property="og:description" content="Hi there, I am Rui Wang. A software developer from Cambridge UK. I write about software development and architecture.">
-    <meta property="og:url" content="http://ruiwanguk.github.com/bigdata/hadoop/2014/11/19/hadoop-build-in-counter/">
+    <meta property="og:url" content="http://ruiwanguk.github.com/bigdata/2014/11/19/hadoop-build-in-counter/">
     <meta property="og:site_name" content="Rui Wang's Blog">
 </head>
 
@@ -85,21 +85,21 @@
   <p>Finding the performance bottleneck of a Hadoop job can be tricky. <a href="https://www.inkling.com/read/hadoop-definitive-guide-tom-white-3rd/chapter-8/counters">Counters</a> are often a quick and cheap way of gathering statistics across all the mappers and reducers. This makes them particularly useful for problem diagnosis. By default, Hadoop provides a set of built-in counters for every job. In this post, I will try to explain the purpose of each counter, and how to combine them to make informed judgment about the job.  </p>
 
 <h3 id="case-study">Case study</h3>
-<p>Through out this post, I will try to use the <a href="https://code.google.com/p/spectra-cluster/">PRIDE Cluster</a> project as a example. The project is an implementation of spectrum clustering algorithm using Hadoop. The input consists of a group of spectra produced by mass spectrometer, the outputs are clusters of spectra. The algorithm tries to cluster spectra together based on their similarity. </p>
+<p>Through out this post, I will try to use the <a href="https://code.google.com/p/spectra-cluster/">PRIDE Cluster</a> project as a example. The project is an implementation of spectrum clustering algorithm using Hadoop. The input consists of a group of spectra produced by mass spectrometer, the outputs are clusters of spectra. The algorithm tries to cluster spectra together based on their similarity.</p>
 
-<p>The Hadoop implementation consists of three clustering jobs and one output job. Clustering jobs group spectra together using different pre-conditions, either they are sharing the same highest peak or they falls into the same m/z window. The output job writes out the clusters into a customized output format for downstream database loading and data analysis. </p>
+<p>The Hadoop implementation consists of three clustering jobs and one output job. Clustering jobs group spectra together using different pre-conditions, either they are sharing the same highest peak or they falls into the same m/z window. The output job writes out the clusters into a customized output format for downstream database loading and data analysis.</p>
 
 <h3 id="mapper-counters">Mapper counters</h3>
 <p><strong>Map input records</strong>: The number of key-value pairs consumed by all the mapper tasks. It is incremented every time there is a new pair been passed to a mapper to process. This counter shows you the number of entries has been parsed from your dataset. In the case of PRIDE Cluster, we have a job to read a large number of spectra produced by mass spectrometer. This counter would tell us that how many spectra have been read.  </p>
 
-<p><strong>Map output records</strong>: The number of key-value pairs produced by all the mapper tasks. It is incremented every time when you call <em>context.write()</em> method in your mapper. In case of PRIDE Cluster, the output of each mapper is either spectra or clusters produced by previous steps. This counter would show the number of spectra/clusters have been sent to the reducers. </p>
+<p><strong>Map output records</strong>: The number of key-value pairs produced by all the mapper tasks. It is incremented every time when you call <em>context.write()</em> method in your mapper. In case of PRIDE Cluster, the output of each mapper is either spectra or clusters produced by previous steps. This counter would show the number of spectra/clusters have been sent to the reducers.</p>
 
 <p><strong>Map output bytes</strong>: The total number of bytes send by all the mapper tasks to the reducers. In PRIDE Cluster, this would tell us whether the data has been produced properly, if this number of too low, this means something is wrong with either the loading process or the mapping process.</p>
 
 <h3 id="reducer-counters">Reducer counters</h3>
-<p><strong>Reduce input groups</strong>: The number of key groups consumed by all the reducer tasks. It is incremented every time a new key has been passed into the reducer. For PRIDE Cluster, a group of spectra may share one highest peak, this highest peak is used to group these spectra together for reducing. </p>
+<p><strong>Reduce input groups</strong>: The number of key groups consumed by all the reducer tasks. It is incremented every time a new key has been passed into the reducer. For PRIDE Cluster, a group of spectra may share one highest peak, this highest peak is used to group these spectra together for reducing.</p>
 
-<p><strong>Reduce input records</strong>: This is the number of key-value pairs passed to all the reducers. It is incremented every time when a new value has been consumed. In PRIDE Cluster, the values are clusters produced by the mappers. </p>
+<p><strong>Reduce input records</strong>: This is the number of key-value pairs passed to all the reducers. It is incremented every time when a new value has been consumed. In PRIDE Cluster, the values are clusters produced by the mappers.</p>
 
 <p><strong>Reduce output records</strong>: The number of reduce outputs generated by all the reducer tasks. It is incremented every time when <em>context.write()</em> was called in reducer. This counter is particular useful for PRIDE Cluster jobs, as it tells us how many clusters in total have been produced.</p>
 
@@ -112,7 +112,7 @@
 
 <p><strong>Combine output records</strong>: The number of output records produced by all the combiners. Incremented every time there is a value been written out.</p>
 
-<p>Combining these two counters, you can often infer the effectiveness of the combiners. </p>
+<p>Combining these two counters, you can often infer the effectiveness of the combiners.</p>
 
 <h3 id="other-counters">Other counters</h3>
 

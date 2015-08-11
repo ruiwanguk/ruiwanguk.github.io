@@ -7,24 +7,59 @@
     <atom:link href="http://ruiwanguk.github.com/feed.xml" rel="self" type="application/rss+xml" />
     
       <item>
+        <title>Lambda Architecture</title>
+        <description>&lt;h3 id=&quot;the-lambda-architecture&quot;&gt;The Lambda architecture&lt;/h3&gt;
+
+&lt;p&gt;The Lambda architecture is designed to address the limitations of the existing batch-oriented Big Data platform (e.g., Hadoop Map Reduce), by combining batch and stream processing together to provide realtime business intelligence. The idea is to be able to run ad-hoc queries against all of available data to get results, and avoid querying a petabyte dataset every time by pre-computing these results as views and queries them instead.&lt;/p&gt;
+
+&lt;p&gt;The Lambda architecture consists of three layers: batch layer, serving layer, and speed layer. Here’s how it looks like.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://ruiwanguk.github.com/assets/images/lambda_architecture.png&quot; alt=&quot;Lambda architecture diagram&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The batch layer together with serving layer provides the batch processing component of the architecture. The batch layer has two functions: (i) managing the master dataset (an immutable, append-only set of raw data); (ii) to pre-compute the batch views. The serving layer indexes the batch views so that they can b queried in low-latency, ad-hoc way.&lt;/p&gt;
+
+&lt;p&gt;The speed layer provides the same business logic as the batch layer in that it computes views from the data it receives. However, the speed layer needs to compensate for the high-latency of the batch layer. It does this by computing realtime views, these realtime views contain only the delta results to supplement the batch views.&lt;/p&gt;
+
+&lt;p&gt;It is worth pointing out, in this architecture, all incoming data are inserted to both the batch and realtime systems, both systems are also accessed when querying the data.&lt;/p&gt;
+
+&lt;h3 id=&quot;my-thoughts&quot;&gt;My thoughts&lt;/h3&gt;
+
+&lt;p&gt;The Lambda architecture pattern offers scalability and fault-tolerant out of box. However, maintaining two applications that doing pretty much the same can lead to future maintaince issues. These issues can be worsened if the two applications are implemented in two languages.&lt;/p&gt;
+
+&lt;p&gt;Additionally, the reason behind splitting stream and batch is based on the fact that batch system is more efficient for reprocessing, tasks such as: fixing errors, or reprocessing after delayed arrivals. But these distinctions between batch and streaming are quickly going away, especially with the introduction of the next generation Big Data platforms, such as: Spark.&lt;/p&gt;
+
+&lt;h3 id=&quot;related-links&quot;&gt;Related links&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://lambda-architecture.net/&quot;&gt;Lambda architecture&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://jameskinley.tumblr.com/post/37398560534/the-lambda-architecture-principles-for&quot;&gt;The Lambda architecture: principles for architecturing realtime Big Data systems&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.slideshare.net/gwenshap/data-architectures-for-robust-decision-making&quot;&gt;Data architectures for robust decision making&lt;/a&gt;&lt;/p&gt;
+</description>
+        <pubDate>Tue, 11 Aug 2015 21:27:19 +0100</pubDate>
+        <link>http://ruiwanguk.github.com/architecture/2015/08/11/lambda-architecture/</link>
+        <guid isPermaLink="true">http://ruiwanguk.github.com/architecture/2015/08/11/lambda-architecture/</guid>
+      </item>
+    
+      <item>
         <title>On Technical Debt</title>
         <description>&lt;h3 id=&quot;what-is-technical-debt&quot;&gt;What is Technical Debt?&lt;/h3&gt;
 
-&lt;p&gt;Technical debt represents the internal quality of a software project. This include too complex code, code duplication, lack of tests, violations found in static analysis and etc. &lt;/p&gt;
+&lt;p&gt;Technical debt represents the internal quality of a software project. This include too complex code, code duplication, lack of tests, violations found in static analysis and etc.&lt;/p&gt;
 
-&lt;p&gt;To facilitate discussions with people from other domains, it is often introduced as a metaphor referencing the financial domain, where one views internal code quality problems as financial debt, the total amount of debt is the effort it would take to clean up the code base. Just like the normal debt that has interests, the longer you wait, the more effort it takes to solve the issue. &lt;/p&gt;
+&lt;p&gt;To facilitate discussions with people from other domains, it is often introduced as a metaphor referencing the financial domain, where one views internal code quality problems as financial debt, the total amount of debt is the effort it would take to clean up the code base. Just like the normal debt that has interests, the longer you wait, the more effort it takes to solve the issue.&lt;/p&gt;
 
 &lt;h3 id=&quot;why-is-it-important&quot;&gt;Why is it important?&lt;/h3&gt;
 
-&lt;p&gt;From software engineering point of view, we all aim for good architecture and clean maintainable code when working on a project, we believe that by improving the quality of the code base will lead to increase in business values in the long run. &lt;/p&gt;
+&lt;p&gt;From software engineering point of view, we all aim for good architecture and clean maintainable code when working on a project, we believe that by improving the quality of the code base will lead to increase in business values in the long run.&lt;/p&gt;
 
 &lt;p&gt;If we don’t address the technical debts, they will inevitably surface up and backfire at some point. In the worst cases, they can render the whole team standstill.  &lt;/p&gt;
 
 &lt;h3 id=&quot;what-are-the-common-misunderstandings-of-technical-debt&quot;&gt;What are the common misunderstandings of Technical Debt?&lt;/h3&gt;
 
-&lt;p&gt;Technical debts are often viewed as bad, and we should address these issues as early as possible. But is it really true? &lt;/p&gt;
+&lt;p&gt;Technical debts are often viewed as bad, and we should address these issues as early as possible. But is it really true?&lt;/p&gt;
 
-&lt;p&gt;First of all, unlike financial debt, you don’t have to pay back the technical debts. If one piece of code or a component will remain unchanged, then it doesn’t make sense to re-factor the code, it will bring nothing in return for the business. Like any other long term software project, my team also have legacy systems and legacy tools, they are often not less used and causing us and our users no problems, so these cases, it doesn’t make sense to rewrite these code to make them better. &lt;/p&gt;
+&lt;p&gt;First of all, unlike financial debt, you don’t have to pay back the technical debts. If one piece of code or a component will remain unchanged, then it doesn’t make sense to re-factor the code, it will bring nothing in return for the business. Like any other long term software project, my team also have legacy systems and legacy tools, they are often not less used and causing us and our users no problems, so these cases, it doesn’t make sense to rewrite these code to make them better.&lt;/p&gt;
 
 &lt;p&gt;Second, like financial debt, it can be a good thing to have technical debt. In finance, if your return in investment is higher than the amount you borrowed plus the interests, then it makes absolute sense to have the debt. Likewise, if you are building a software product and the time to market is very important, then it makes sense to sacrifice the quality for speed. In fact, a lot of successful companies, such Twitter, Facebook, and Amazon, they are constantly rewriting their system, but their time-to-market has yielded huge financial rewards.&lt;/p&gt;
 
@@ -32,7 +67,7 @@
 
 &lt;p&gt;Technical debts are unavoidable! For every project, there will be multiple external impact factors. There may well be time pressure, where developers are forced to make short-term gain by sacrificing the quality. Also, the experience of the team is not equal, there will be some senior developers and some junior developers, they will not produce the same level of quality code. Lastly, the technology is constantly improving, new techniques are created all the time. Even if your code is well designed, overtime, it could be that a new technique comes along and renders the code obsolete.  &lt;/p&gt;
 
-&lt;p&gt;Rather than view technical debts as bad, one should view them as investment in the product. Investment in quality will have its benefits, at the same time, it will have associated cost. If the benefits out weight the cost, then the investment in quality should be made. However, if the cost is far higher than the benefits, then one should think again before act. &lt;/p&gt;
+&lt;p&gt;Rather than view technical debts as bad, one should view them as investment in the product. Investment in quality will have its benefits, at the same time, it will have associated cost. If the benefits out weight the cost, then the investment in quality should be made. However, if the cost is far higher than the benefits, then one should think again before act.&lt;/p&gt;
 
 &lt;h3 id=&quot;related-links&quot;&gt;Related links&lt;/h3&gt;
 
@@ -45,8 +80,8 @@
 &lt;p&gt;&lt;a href=&quot;http://www.se-radio.net/2015/04/episode-224-sven-johann-and-eberhard-wolff-on-technical-debt/&quot;&gt;Technical debt - Software Engineering Radio&lt;/a&gt;&lt;/p&gt;
 </description>
         <pubDate>Sun, 17 May 2015 21:27:19 +0100</pubDate>
-        <link>http://ruiwanguk.github.com/software,/project/management/2015/05/17/on-technical-debt/</link>
-        <guid isPermaLink="true">http://ruiwanguk.github.com/software,/project/management/2015/05/17/on-technical-debt/</guid>
+        <link>http://ruiwanguk.github.com/projectmanagement/2015/05/17/on-technical-debt/</link>
+        <guid isPermaLink="true">http://ruiwanguk.github.com/projectmanagement/2015/05/17/on-technical-debt/</guid>
       </item>
     
       <item>
@@ -146,21 +181,21 @@
         <description>&lt;p&gt;Finding the performance bottleneck of a Hadoop job can be tricky. &lt;a href=&quot;https://www.inkling.com/read/hadoop-definitive-guide-tom-white-3rd/chapter-8/counters&quot;&gt;Counters&lt;/a&gt; are often a quick and cheap way of gathering statistics across all the mappers and reducers. This makes them particularly useful for problem diagnosis. By default, Hadoop provides a set of built-in counters for every job. In this post, I will try to explain the purpose of each counter, and how to combine them to make informed judgment about the job.  &lt;/p&gt;
 
 &lt;h3 id=&quot;case-study&quot;&gt;Case study&lt;/h3&gt;
-&lt;p&gt;Through out this post, I will try to use the &lt;a href=&quot;https://code.google.com/p/spectra-cluster/&quot;&gt;PRIDE Cluster&lt;/a&gt; project as a example. The project is an implementation of spectrum clustering algorithm using Hadoop. The input consists of a group of spectra produced by mass spectrometer, the outputs are clusters of spectra. The algorithm tries to cluster spectra together based on their similarity. &lt;/p&gt;
+&lt;p&gt;Through out this post, I will try to use the &lt;a href=&quot;https://code.google.com/p/spectra-cluster/&quot;&gt;PRIDE Cluster&lt;/a&gt; project as a example. The project is an implementation of spectrum clustering algorithm using Hadoop. The input consists of a group of spectra produced by mass spectrometer, the outputs are clusters of spectra. The algorithm tries to cluster spectra together based on their similarity.&lt;/p&gt;
 
-&lt;p&gt;The Hadoop implementation consists of three clustering jobs and one output job. Clustering jobs group spectra together using different pre-conditions, either they are sharing the same highest peak or they falls into the same m/z window. The output job writes out the clusters into a customized output format for downstream database loading and data analysis. &lt;/p&gt;
+&lt;p&gt;The Hadoop implementation consists of three clustering jobs and one output job. Clustering jobs group spectra together using different pre-conditions, either they are sharing the same highest peak or they falls into the same m/z window. The output job writes out the clusters into a customized output format for downstream database loading and data analysis.&lt;/p&gt;
 
 &lt;h3 id=&quot;mapper-counters&quot;&gt;Mapper counters&lt;/h3&gt;
 &lt;p&gt;&lt;strong&gt;Map input records&lt;/strong&gt;: The number of key-value pairs consumed by all the mapper tasks. It is incremented every time there is a new pair been passed to a mapper to process. This counter shows you the number of entries has been parsed from your dataset. In the case of PRIDE Cluster, we have a job to read a large number of spectra produced by mass spectrometer. This counter would tell us that how many spectra have been read.  &lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;Map output records&lt;/strong&gt;: The number of key-value pairs produced by all the mapper tasks. It is incremented every time when you call &lt;em&gt;context.write()&lt;/em&gt; method in your mapper. In case of PRIDE Cluster, the output of each mapper is either spectra or clusters produced by previous steps. This counter would show the number of spectra/clusters have been sent to the reducers. &lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Map output records&lt;/strong&gt;: The number of key-value pairs produced by all the mapper tasks. It is incremented every time when you call &lt;em&gt;context.write()&lt;/em&gt; method in your mapper. In case of PRIDE Cluster, the output of each mapper is either spectra or clusters produced by previous steps. This counter would show the number of spectra/clusters have been sent to the reducers.&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;Map output bytes&lt;/strong&gt;: The total number of bytes send by all the mapper tasks to the reducers. In PRIDE Cluster, this would tell us whether the data has been produced properly, if this number of too low, this means something is wrong with either the loading process or the mapping process.&lt;/p&gt;
 
 &lt;h3 id=&quot;reducer-counters&quot;&gt;Reducer counters&lt;/h3&gt;
-&lt;p&gt;&lt;strong&gt;Reduce input groups&lt;/strong&gt;: The number of key groups consumed by all the reducer tasks. It is incremented every time a new key has been passed into the reducer. For PRIDE Cluster, a group of spectra may share one highest peak, this highest peak is used to group these spectra together for reducing. &lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Reduce input groups&lt;/strong&gt;: The number of key groups consumed by all the reducer tasks. It is incremented every time a new key has been passed into the reducer. For PRIDE Cluster, a group of spectra may share one highest peak, this highest peak is used to group these spectra together for reducing.&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;Reduce input records&lt;/strong&gt;: This is the number of key-value pairs passed to all the reducers. It is incremented every time when a new value has been consumed. In PRIDE Cluster, the values are clusters produced by the mappers. &lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Reduce input records&lt;/strong&gt;: This is the number of key-value pairs passed to all the reducers. It is incremented every time when a new value has been consumed. In PRIDE Cluster, the values are clusters produced by the mappers.&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;Reduce output records&lt;/strong&gt;: The number of reduce outputs generated by all the reducer tasks. It is incremented every time when &lt;em&gt;context.write()&lt;/em&gt; was called in reducer. This counter is particular useful for PRIDE Cluster jobs, as it tells us how many clusters in total have been produced.&lt;/p&gt;
 
@@ -173,7 +208,7 @@
 
 &lt;p&gt;&lt;strong&gt;Combine output records&lt;/strong&gt;: The number of output records produced by all the combiners. Incremented every time there is a value been written out.&lt;/p&gt;
 
-&lt;p&gt;Combining these two counters, you can often infer the effectiveness of the combiners. &lt;/p&gt;
+&lt;p&gt;Combining these two counters, you can often infer the effectiveness of the combiners.&lt;/p&gt;
 
 &lt;h3 id=&quot;other-counters&quot;&gt;Other counters&lt;/h3&gt;
 
@@ -187,8 +222,8 @@
 &lt;p&gt;&lt;a href=&quot;http://www.philippeadjiman.com/blog/2010/01/14/hadoop-tutorial-series-issue-4-to-use-or-not-to-use-a-combiner/&quot;&gt;To use or not to use a combiner&lt;/a&gt;&lt;/p&gt;
 </description>
         <pubDate>Wed, 19 Nov 2014 20:27:19 +0000</pubDate>
-        <link>http://ruiwanguk.github.com/bigdata/hadoop/2014/11/19/hadoop-build-in-counter/</link>
-        <guid isPermaLink="true">http://ruiwanguk.github.com/bigdata/hadoop/2014/11/19/hadoop-build-in-counter/</guid>
+        <link>http://ruiwanguk.github.com/bigdata/2014/11/19/hadoop-build-in-counter/</link>
+        <guid isPermaLink="true">http://ruiwanguk.github.com/bigdata/2014/11/19/hadoop-build-in-counter/</guid>
       </item>
     
       <item>
@@ -387,11 +422,11 @@ var newObj = Object.create(oldObj);
         <title>Access MySQL using R</title>
         <description>&lt;p&gt;For data scientists, getting and cleaning data is one of most important step in their data analysis work flow. High quality data paves the way for well structured and executed data analysis, whereas poor quality data can often lead to misguided discoveries.  &lt;/p&gt;
 
-&lt;p&gt;Relational DBMS such as MySQL and Oracle are frequently used to store preprocessed and structured data. It is therefore important to understand how to connect to relational databases and retrieve required information from its tables. In this post, I will cover how to use R to access MySQL databases. &lt;/p&gt;
+&lt;p&gt;Relational DBMS such as MySQL and Oracle are frequently used to store preprocessed and structured data. It is therefore important to understand how to connect to relational databases and retrieve required information from its tables. In this post, I will cover how to use R to access MySQL databases.&lt;/p&gt;
 
 &lt;h3 id=&quot;setup&quot;&gt;Setup&lt;/h3&gt;
 
-&lt;p&gt;Before you can connect to MySQL, you need to install RMySQL packages in your R. If you are using Mac, it is fairly straightforward. Simply type the following command in your R terminal. &lt;/p&gt;
+&lt;p&gt;Before you can connect to MySQL, you need to install RMySQL packages in your R. If you are using Mac, it is fairly straightforward. Simply type the following command in your R terminal.&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;&amp;gt; install.packages(&quot;RMySQL&quot;)
 &lt;/code&gt;&lt;/pre&gt;
@@ -400,12 +435,12 @@ var newObj = Object.create(oldObj);
 
 &lt;h3 id=&quot;connect-to-mysql&quot;&gt;Connect to MySQL&lt;/h3&gt;
 
-&lt;p&gt;Now you are ready to go, make sure that you have an existing MySQL database which you have access permission. Or, you can &lt;a href=&quot;http://dev.mysql.com/doc/refman/5.1/en/installing.html&quot;&gt;install MySQL&lt;/a&gt; locally and create a test database yourself. &lt;/p&gt;
+&lt;p&gt;Now you are ready to go, make sure that you have an existing MySQL database which you have access permission. Or, you can &lt;a href=&quot;http://dev.mysql.com/doc/refman/5.1/en/installing.html&quot;&gt;install MySQL&lt;/a&gt; locally and create a test database yourself.&lt;/p&gt;
 
 &lt;p&gt;Here, I am using the public facing MySQL instance provided by the Proteomics Identifications data (&lt;a href=&quot;http://www.ebi.ac.uk/pride&quot;&gt;PRIDE&lt;/a&gt;). It stores the protein and peptide identification evidences produced by mass spectrometers. Here are the database connection details:&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;Host: 193.62.194.210
-Port: 5000 
+Port: 5000
 Database: pride_2
 &lt;/code&gt;&lt;/pre&gt;
 
@@ -413,7 +448,7 @@ Database: pride_2
 
 &lt;p&gt;Connect to the database using the following command:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;&amp;gt; con &amp;lt;- dbConnect(MySQL(), user=&quot;inspector&quot;, password=&quot;inspector&quot;, 
+&lt;pre&gt;&lt;code&gt;&amp;gt; con &amp;lt;- dbConnect(MySQL(), user=&quot;inspector&quot;, password=&quot;inspector&quot;,
 	dbname=&quot;pride_2&quot;, host=&quot;193.62.194.210&quot;, port=5000)
 &lt;/code&gt;&lt;/pre&gt;
 
@@ -425,7 +460,7 @@ Database: pride_2
 &amp;gt; dbListTable(con)
 
 # list fields in the &#39;pride_experiment&#39; table
-&amp;gt; dbListFields(con, &quot;pride_experiment&quot;)	
+&amp;gt; dbListFields(con, &quot;pride_experiment&quot;)
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;You can also do a select query:&lt;/p&gt;
@@ -451,18 +486,18 @@ Database: pride_2
 
 &lt;p&gt;Finally, it is important that you remember to close the connection once you done:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;&amp;gt; dbDisconnect(con)		
+&lt;pre&gt;&lt;code&gt;&amp;gt; dbDisconnect(con)
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;h3 id=&quot;other-resources&quot;&gt;Other resources&lt;/h3&gt;
 
 &lt;p&gt;&lt;a href=&quot;http://cran.r-project.org/web/packages/RMySQL/RMySQL.pdf&quot;&gt;RMySQL vignette&lt;/a&gt; provides a list of commonly used commands&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;http://www.r-bloggers.com/mysql-and-r/&quot;&gt;MySQL and R&lt;/a&gt; is a nice blog post on additional RMySQL tips. &lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;http://www.r-bloggers.com/mysql-and-r/&quot;&gt;MySQL and R&lt;/a&gt; is a nice blog post on additional RMySQL tips.&lt;/p&gt;
 </description>
         <pubDate>Tue, 14 Oct 2014 09:47:19 +0100</pubDate>
-        <link>http://ruiwanguk.github.com/r/database/2014/10/14/how-access-mysql-using-r/</link>
-        <guid isPermaLink="true">http://ruiwanguk.github.com/r/database/2014/10/14/how-access-mysql-using-r/</guid>
+        <link>http://ruiwanguk.github.com/r/2014/10/14/how-access-mysql-using-r/</link>
+        <guid isPermaLink="true">http://ruiwanguk.github.com/r/2014/10/14/how-access-mysql-using-r/</guid>
       </item>
     
   </channel>
