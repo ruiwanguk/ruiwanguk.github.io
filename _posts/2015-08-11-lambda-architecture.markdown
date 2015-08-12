@@ -20,6 +20,7 @@ The speed layer provides the same business logic as the batch layer in that it c
 
 It is worth pointing out, in this architecture, all incoming data are inserted to both the batch and realtime systems, it is common to use some kind of ingestion module up front to capture and feed immutable sequence of records into both systems, e.g., Kafka. Also, both systems are accessed when querying the data, people often use two different databases to store the output views, one optimized for real time and the other optimized for batch updates.
 
+
 ### My thoughts
 
 The Lambda architecture pattern offers scalability and fault-tolerant out of box. However, maintaining two applications that doing pretty much the same can lead to future maintaince issues. These issues can be worsened if the two applications are implemented in two languages.
