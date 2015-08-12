@@ -8,7 +8,7 @@ categories: Architecture
 
 ### The Lambda architecture
 
-The Lambda architecture is designed to address the limitations of the existing batch-oriented Big Data platform (e.g., Hadoop Map Reduce), by combining batch and stream processing together to provide realtime business intelligence. The idea is to be able to run ad-hoc queries against all of available data to get results, and avoid querying a petabyte dataset every time by pre-computing these results as views and queries them instead.
+The Lambda architecture is aimed at applications built around complex asynchronous transformations that need to run with low latency. A good example would be a news recommendation system that needs to crawl various news sources, process and normalize all the input, and then index, rank, and store it for serving. It does this by combining batch and stream processing together to provide realtime business intelligence. The idea is to be able to run ad-hoc queries against all of available data to get results, and avoid querying a petabyte dataset every time by pre-computing these results as views and queries them instead.
 
 The Lambda architecture consists of three layers: batch layer, serving layer, and speed layer. Here's how it looks like.
 
@@ -18,7 +18,7 @@ The batch layer together with serving layer provides the batch processing compon
 
 The speed layer provides the same business logic as the batch layer in that it computes views from the data it receives. However, the speed layer needs to compensate for the high-latency of the batch layer. It does this by computing realtime views, these realtime views contain only the delta results to supplement the batch views.
 
-It is worth pointing out, in this architecture, all incoming data are inserted to both the batch and realtime systems, both systems are also accessed when querying the data.
+It is worth pointing out, in this architecture, all incoming data are inserted to both the batch and realtime systems, it is common to use some kind of ingestion module up front to capture and feed immutable sequence of records into both systems, e.g., Kafka. Also, both systems are accessed when querying the data, people often use two different databases to store the output views, one optimized for real time and the other optimized for batch updates.
 
 ### My thoughts
 
@@ -33,3 +33,5 @@ Additionally, the reason behind splitting stream and batch is based on the fact 
 [The Lambda architecture: principles for architecturing realtime Big Data systems](http://jameskinley.tumblr.com/post/37398560534/the-lambda-architecture-principles-for)
 
 [Data architectures for robust decision making](http://www.slideshare.net/gwenshap/data-architectures-for-robust-decision-making)
+
+[Questioning the Lambda architecture](http://radar.oreilly.com/2014/07/questioning-the-lambda-architecture.html)
